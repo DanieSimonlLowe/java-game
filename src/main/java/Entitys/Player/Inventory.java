@@ -1,6 +1,12 @@
 package Entitys.Player;
 
 import Background.Tile;
+import Background.TileUtills;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 public class Inventory {
     static final double maxSpace = 30;
@@ -35,7 +41,6 @@ public class Inventory {
         if (spaceUsed == 0) {
             return;
         }
-        System.out.println("up2");
         do {
             selected += 1;
             if (selected >= tilePos.length) {
@@ -51,7 +56,7 @@ public class Inventory {
         do {
             selected -= 1;
             if (selected < 0) {
-                selected = tilePos.length;
+                selected = tilePos.length-1;
             }
         } while (tileSpace[selected] == 0);
     }
@@ -79,7 +84,56 @@ public class Inventory {
             tileSpace[selected] = 0;
         }
     }
-    
+
+    static final private double circleConst = 1/Math.sqrt(2);
+    private int getCircleX(int currHeight, int size) {
+        return (int)Math.floor(circleConst*Math.sqrt( 2*currHeight*(size-currHeight) ));
+    }
+
+    static private final int circleRectNum = 20;
+    protected void drawTo(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        Graphics2D g2d = (Graphics2D)image.getGraphics();
+
+        int sumY = height;
+        int i = selected;
+        do {
+            if (tileSpace[i] <= maxSpace/circleRectNum) {
+                i += 1;
+                if (i >= tilePos.length) {
+                    i = 0;
+                }
+                continue;
+            }
+
+            g2d.setColor(TileUtills.getTileColor(tilePos[i]));
+
+            int amount = (int) Math.round(tileSpace[i]/maxSpace*height);
+            while (amount > 0) {
+                int h;
+                if (amount > maxSpace/circleRectNum) {
+                    h = height/circleRectNum;
+                } else {
+                    h = amount;
+                }
+                int valX = getCircleX(sumY,height);
+                g2d.fillRect(width/2-valX,sumY,valX*2,h);
+                amount -= h;
+                sumY -= h;
+            }
+
+            if (sumY <= 1) {
+                break;
+            }
+
+            i += 1;
+            if (i >= tilePos.length) {
+                i = 0;
+            }
+        } while (i != selected);
+        g2d.dispose();
+    }
 
 
 }

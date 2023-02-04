@@ -25,6 +25,7 @@ public class Board extends JPanel implements ActionListener {
     private long oldTime;
 
     private final Entity player;
+    private double deltaTime;
 
     public Board() {
         super();
@@ -59,7 +60,7 @@ public class Board extends JPanel implements ActionListener {
 
         entityLayer.clear();
         for (Entity entity: entities) {
-            entityLayer.drawEntity(entity);
+            entityLayer.drawEntity(entity, deltaTime);
         }
 
 
@@ -72,7 +73,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         long newTime = System.nanoTime();
-        double deltaTime = (newTime - oldTime)/1e+9;
+        deltaTime = (newTime - oldTime)/1e+9;
         oldTime = newTime;
         for (Entity entity: entities) {
             entity.move(deltaTime,baseLayer);

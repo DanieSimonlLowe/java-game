@@ -1,10 +1,10 @@
 package Entitys;
 
 import java.awt.*;
-import javax.swing.*;
 import javax.vecmath.*;
 import Background.Tile;
 import Background.TileUtills;
+import Display.Drawable;
 import Display.Layer;
 
 public class Entity {
@@ -14,7 +14,7 @@ public class Entity {
     private double speed;
     private Vector2d position;
     private EntityController controller;
-    private Image image;
+    private Drawable drawable;
     private EntityPlacer placer;
 
     private Tuple2d oldDir;
@@ -25,31 +25,31 @@ public class Entity {
         return controller;
     }
 
-    public Entity(Tile[] weaknesses, int health, double speed, Vector2d position, ImageIcon image) {
-        initEntity(weaknesses,health,speed,position,null,null,image);
+    public Entity(Tile[] weaknesses, int health, double speed, Vector2d position, Drawable drawable) {
+        initEntity(weaknesses,health,speed,position,null,null,drawable);
     }
 
-    public Entity(Tile[] weaknesses, int health, double speed, Vector2d position, EntityController controller, ImageIcon image) {
-        initEntity(weaknesses,health,speed,position,controller,null,image);
+    public Entity(Tile[] weaknesses, int health, double speed, Vector2d position, EntityController controller, Drawable drawable) {
+        initEntity(weaknesses,health,speed,position,controller,null,drawable);
     }
 
-    public Entity(Tile[] weaknesses, int health, double speed, Vector2d position, EntityController controller, EntityPlacer placer, ImageIcon image) {
-        initEntity(weaknesses,health,speed,position,controller,placer,image);
+    public Entity(Tile[] weaknesses, int health, double speed, Vector2d position, EntityController controller, EntityPlacer placer, Drawable drawable) {
+        initEntity(weaknesses,health,speed,position,controller,placer,drawable);
     }
 
-    private void initEntity(Tile[] weaknesses, int health, double speed, Vector2d position, EntityController controller, EntityPlacer placer, ImageIcon image) {
+    private void initEntity(Tile[] weaknesses, int health, double speed, Vector2d position, EntityController controller, EntityPlacer placer, Drawable drawable) {
         this.health = health;
         this.weaknesses = weaknesses;
         this.speed = speed;
         this.position = position;
         this.controller = controller;
-        this.image = image.getImage();
+        this.drawable = drawable;
         this.placer = placer;
         this.oldDir = new Vector2d(0,0);
     }
 
-    public Image getImage() {
-        return image;
+    public Image getImage(double deltaTime) {
+        return drawable.draw(deltaTime);
     }
 
     public int getPosX() {
@@ -62,20 +62,20 @@ public class Entity {
     private int[][] getTestPoints() {
         int[][] points = new int[testPointCount][2];
         //center
-        points[0][0] = getPosX()+image.getWidth(null)/2;
-        points[0][1] = getPosY()+image.getHeight(null)/2;
+        points[0][0] = getPosX()+drawable.getWidth()/2;
+        points[0][1] = getPosY()+drawable.getHeight()/2;
         //top
-        points[1][0] = getPosX()+image.getWidth(null)/2;
+        points[1][0] = getPosX()+drawable.getWidth()/2;
         points[1][1] = getPosY();
         //left
         points[2][0] = getPosX();
-        points[2][1] = getPosY()+image.getHeight(null)/2;
+        points[2][1] = getPosY()+drawable.getHeight()/2;
         //bottom
-        points[3][0] = getPosX()+image.getWidth(null)/2;
-        points[3][1] = getPosY()+image.getHeight(null);
+        points[3][0] = getPosX()+drawable.getWidth()/2;
+        points[3][1] = getPosY()+drawable.getHeight();
         //right
-        points[4][0] = getPosX()+image.getWidth(null);
-        points[4][1] = getPosY()+image.getHeight(null)/2;
+        points[4][0] = getPosX()+drawable.getWidth();
+        points[4][1] = getPosY()+drawable.getHeight()/2;
         return points;
     }
 
@@ -158,15 +158,15 @@ public class Entity {
             if (position.x < 0) {
                 position.x = 0;
                 dir.x = 0;
-            } else if (position.x >= base.getWidth() - image.getWidth(null)) {
-                position.x = base.getWidth() - image.getWidth(null) - 1;
+            } else if (position.x >= base.getWidth() - drawable.getWidth()) {
+                position.x = base.getWidth() - drawable.getWidth() - 1;
                 dir.x = 0;
             }
             if (position.y < 0) {
                 position.y = 0;
                 dir.y = 0;
-            } else if (position.y >= base.getHeight() - image.getHeight(null)) {
-                position.y = base.getHeight() - image.getHeight(null) - 1;
+            } else if (position.y >= base.getHeight() - drawable.getHeight()) {
+                position.y = base.getHeight() - drawable.getHeight() - 1;
                 dir.y = 0;
             }
         }
@@ -176,7 +176,7 @@ public class Entity {
 
     public void place(Layer base, double deltaTime) {
         if (placer != null) {
-            placer.place(base, position, image, deltaTime);
+            placer.place(base, position, drawable.getPlaceImage(), deltaTime);
         }
     }
 }

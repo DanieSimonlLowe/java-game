@@ -58,8 +58,8 @@ public class Layer {
         g2d.drawImage(image,x,y,null);
     }
 
-    void drawEntity(Entity entity) {
-        drawImage(entity.getImage(),entity.getPosX(),entity.getPosY());
+    void drawEntity(Entity entity, double deltaTime) {
+        drawImage(entity.getImage(deltaTime),entity.getPosX(),entity.getPosY());
     }
 
     public void drawColorImage(Vector2d postion, Color color, Image image) {
