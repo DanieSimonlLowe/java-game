@@ -18,8 +18,8 @@ public class Board extends JPanel implements ActionListener {
     Layer entityLayer;
 
     List<Entity> entities;
-    private Timer timer;
-    private final int DELAY = 20;
+    private final Timer timer;
+    private final static int DELAY = 20;
 
     long oldTime;
     public Board() {
@@ -32,7 +32,7 @@ public class Board extends JPanel implements ActionListener {
 
         baseLayer = new Layer(width,height);
         entityLayer = new Layer(width,height);
-        entities = new ArrayList<Entity>();
+        entities = new ArrayList<>();
 
         addKeyListener(new TAdapter());
 
@@ -68,7 +68,7 @@ public class Board extends JPanel implements ActionListener {
         double deltaTime = (newTime - oldTime)/1e+9;
         oldTime = newTime;
         for (Entity entity: entities) {
-            entity.move(deltaTime);
+            entity.move(deltaTime,baseLayer);
             entity.place(baseLayer);
         }
 

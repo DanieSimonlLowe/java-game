@@ -11,11 +11,19 @@ import java.awt.image.WritableRaster;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 public class Layer {
-    private BufferedImage image;
-    private int width;
-    private int height;
+    private final BufferedImage image;
+    private final int width;
+    private final int height;
 
-    private Graphics2D g2d;
+    private final Graphics2D g2d;
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 
     Layer(int width, int height) {
         this.width = width;
@@ -75,6 +83,14 @@ public class Layer {
             }
         }
 
+    }
+
+    public Color getColor(int x, int y) {
+        int clr = image.getRGB(x,y);
+        int red =   (clr & 0x00ff0000) >> 16;
+        int green = (clr & 0x0000ff00) >> 8;
+        int blue =   clr & 0x000000ff;
+        return new Color(red,green,blue);
     }
 
     void paint(Graphics g) {
