@@ -17,6 +17,10 @@ public class Layer {
 
     private final Graphics2D g2d;
 
+    public Graphics2D getG2d() {
+        return g2d;
+    }
+
     public int getWidth() {
         return width;
     }
@@ -50,8 +54,12 @@ public class Layer {
         g2d.setComposite(AlphaComposite.Src);
     }
 
+    public void drawImage(Image image, int x, int y) {
+        g2d.drawImage(image,x,y,null);
+    }
+
     void drawEntity(Entity entity) {
-        g2d.drawImage(entity.getImage(),entity.getPosX(),entity.getPosY(),null);
+        drawImage(entity.getImage(),entity.getPosX(),entity.getPosY());
     }
 
     public void drawColorImage(Vector2d postion, Color color, Image image) {

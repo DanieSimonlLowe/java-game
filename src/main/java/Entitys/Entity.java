@@ -10,7 +10,7 @@ import Display.Layer;
 public class Entity {
     private Tile[] weaknesses;
 
-    private static int testPointCount = 5;
+    private static final int testPointCount = 5;
     private double speed;
     private Vector2d position;
     private EntityController controller;
@@ -20,6 +20,10 @@ public class Entity {
     private Tuple2d oldDir;
 
     private int health;
+
+    public EntityController getController() {
+        return controller;
+    }
 
     public Entity(Tile[] weaknesses, int health, double speed, Vector2d position, ImageIcon image) {
         initEntity(weaknesses,health,speed,position,null,null,image);
@@ -170,9 +174,9 @@ public class Entity {
         oldDir = dir;
     }
 
-    public void place(Layer base) {
+    public void place(Layer base, double deltaTime) {
         if (placer != null) {
-            placer.place(base, position, image);
+            placer.place(base, position, image, deltaTime);
         }
     }
 }

@@ -2,6 +2,7 @@ package Display;
 
 import Entitys.Entity;
 import Entitys.EntityFactory;
+import Entitys.Player.PlayerController;
 import Entitys.Player.TAdapter;
 
 import java.awt.*;
@@ -14,14 +15,17 @@ import javax.vecmath.Vector2d;
 
 public class Board extends JPanel implements ActionListener {
 
-    Layer baseLayer;
-    Layer entityLayer;
+    private final Layer baseLayer;
+    private final Layer entityLayer;
 
-    List<Entity> entities;
+    private final List<Entity> entities;
     private final Timer timer;
     private final static int DELAY = 20;
 
-    long oldTime;
+    private long oldTime;
+
+    private final Entity player;
+
     public Board() {
         super();
         setBackground(Color.black);
@@ -34,17 +38,20 @@ public class Board extends JPanel implements ActionListener {
         entityLayer = new Layer(width,height);
         entities = new ArrayList<>();
 
-        addKeyListener(new TAdapter());
+        player = EntityFactory.makePlayer(new Vector2d(0,0));
+        entities.add(player);
+
+        addKeyListener(new TAdapter((PlayerController) player.getController()));
 
         timer = new Timer(DELAY, this);
         timer.start();
 
-        entities.add(EntityFactory.makePlayer(new Vector2d(0,0)));
 
         setFocusable(true);
 
         oldTime = System.nanoTime();
     }
+
 
     @Override
     public void paintComponent(Graphics g) {
@@ -69,7 +76,7 @@ public class Board extends JPanel implements ActionListener {
         oldTime = newTime;
         for (Entity entity: entities) {
             entity.move(deltaTime,baseLayer);
-            entity.place(baseLayer);
+            entity.place(baseLayer, deltaTime);
         }
 
         repaint();

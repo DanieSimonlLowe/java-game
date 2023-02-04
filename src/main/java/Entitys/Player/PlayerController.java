@@ -8,9 +8,11 @@ import java.awt.event.KeyEvent;
 
 public class PlayerController implements EntityController {
 
-    static private boolean[] directions;
+    private final boolean[] directions;
+    private final Inventory inventory;
 
-    public PlayerController() {
+    public PlayerController(Inventory inventory) {
+        this.inventory = inventory;
         directions = new boolean[]{false, false, false, false};
     }
     @Override
@@ -34,52 +36,61 @@ public class PlayerController implements EntityController {
         return dir;
     }
 
-    static public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT) {
+        if (key == KeyEvent.VK_Q) {
+            inventory.selectDown();
+        }
+
+        if (key == KeyEvent.VK_E) {
+            inventory.selectUp();
+        }
+
+        if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
             directions[0] = true;
         }
 
-        if (key == KeyEvent.VK_RIGHT) {
+        if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
             directions[1] = true;
         }
 
-        if (key == KeyEvent.VK_UP) {
+        if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
             directions[2] = true;
         }
 
-        if (key == KeyEvent.VK_DOWN) {
+        if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
             directions[3] = true;
         }
 
         if (key == KeyEvent.VK_SPACE) {
-            PlayerPlacer.isPlaceing = true;
+            inventory.inUse = true;
         }
     }
 
-    static public void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e) {
 
         int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT) {
+
+        if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
             directions[0] = false;
         }
 
-        if (key == KeyEvent.VK_RIGHT) {
+        if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
             directions[1] = false;
         }
 
-        if (key == KeyEvent.VK_UP) {
+        if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
             directions[2] = false;
         }
 
-        if (key == KeyEvent.VK_DOWN) {
+        if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
             directions[3] = false;
         }
 
         if (key == KeyEvent.VK_SPACE) {
-            PlayerPlacer.isPlaceing = false;
+            inventory.inUse = false;
         }
     }
 }

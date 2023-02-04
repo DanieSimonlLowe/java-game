@@ -1,6 +1,6 @@
 import Display.Board;
 
-import java.awt.EventQueue;
+import java.awt.*;
 import javax.swing.JFrame;
 
 public class Application extends JFrame {
@@ -13,7 +13,10 @@ public class Application extends JFrame {
 
         add(new Board());
 
-        setSize(250, 200);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int)screenSize.getWidth();
+        int height = (int)screenSize.getHeight();
+        setSize(width, height);
 
         setTitle("Application");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
