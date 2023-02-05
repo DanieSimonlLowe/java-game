@@ -20,6 +20,7 @@ public class PlayerDrawable implements Drawable {
 
     private BufferedImage bufferedImage;
 
+
     @Override
     public Image draw(double deltaTime) {
         if (!inventory.getHasChanged()) {
@@ -33,7 +34,13 @@ public class PlayerDrawable implements Drawable {
         inventory.drawTo(bufferedImage);
         g2d.drawImage(topIcon.getImage(),0,0,null);
 
+
         return bufferedImage;
+    }
+
+    @Override
+    public boolean needsRedraw() {
+        return inventory.getHasChanged();
     }
 
     @Override

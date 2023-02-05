@@ -46,13 +46,12 @@ public class Board extends JPanel implements ActionListener {
         entities.add(player);
 
         items = new ArrayList<>();
-        //items.add(new Item(10, Tile.ice, new Vector2d(50,50)));
+
 
         addKeyListener(new TAdapter((PlayerController) player.getController()));
 
         timer = new Timer(DELAY, this);
         timer.start();
-
 
 
         setFocusable(true);

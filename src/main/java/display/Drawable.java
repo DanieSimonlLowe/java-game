@@ -8,4 +8,6 @@ public interface Drawable {
     Image getPlaceImage();
     int getWidth();
     int getHeight();
+
+    boolean needsRedraw();
 }
