@@ -2,11 +2,12 @@ package Entitys.Player;
 
 import Background.Tile;
 import Background.TileUtills;
+import Items.Item;
 
+import javax.vecmath.Vector2d;
 import java.awt.*;
+import java.util.List;
 import java.awt.image.BufferedImage;
-
-import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 public class Inventory {
     static final double maxSpace = 30;
@@ -135,5 +136,19 @@ public class Inventory {
         g2d.dispose();
     }
 
+    public void addItem(Item item) {
+        addTile(item.getTile(),item.getAmount());
+        item.destroy();
+    }
 
+    public void collect(List<Item> items, Vector2d position) {
+        if (spaceUsed >= maxSpace) {
+            return;
+        }
+        for (Item item: items) {
+            if (item.shouldPickUp(position)) {
+                addItem(item);
+            }
+        }
+    }
 }

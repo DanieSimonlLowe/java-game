@@ -1,6 +1,7 @@
 package Display;
 
 import Entitys.Entity;
+import Items.Item;
 
 import javax.vecmath.Vector2d;
 import java.awt.*;
@@ -17,9 +18,6 @@ public class Layer {
 
     private final Graphics2D g2d;
 
-    public Graphics2D getG2d() {
-        return g2d;
-    }
 
     public int getWidth() {
         return width;
@@ -39,19 +37,12 @@ public class Layer {
         clear();
 
 
-        RenderingHints rh
-                = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        rh.put(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHints(rh);
     }
 
     void clear() {
         g2d.setComposite(AlphaComposite.Clear);
         g2d.fillRect(0,0,width,height);
-        g2d.setComposite(AlphaComposite.Src);
+        g2d.setComposite(AlphaComposite.SrcOver);
     }
 
     public void drawImage(Image image, int x, int y) {
@@ -60,6 +51,11 @@ public class Layer {
 
     void drawEntity(Entity entity, double deltaTime) {
         drawImage(entity.getImage(deltaTime),entity.getPosX(),entity.getPosY());
+    }
+
+
+    void drawItem(Item item) {
+        drawImage(item.getImage(),item.getPosX(),item.getPosY());
     }
 
     public void drawColorImage(Vector2d postion, Color color, Image image) {

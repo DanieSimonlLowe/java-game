@@ -174,6 +174,10 @@ public class Entity {
         oldDir = dir;
     }
 
+    public Vector2d getPosition() {
+        return position;
+    }
+
     public void place(Layer base, double deltaTime) {
         if (placer != null) {
             placer.place(base, position, drawable.getPlaceImage(), deltaTime);

@@ -1,9 +1,11 @@
 package Display;
 
+import Background.Tile;
 import Entitys.Entity;
 import Entitys.EntityFactory;
 import Entitys.Player.PlayerController;
 import Entitys.Player.TAdapter;
+import Items.Item;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,6 +21,8 @@ public class Board extends JPanel implements ActionListener {
     private final Layer entityLayer;
 
     private final List<Entity> entities;
+    private final List<Item> items;
+
     private final Timer timer;
     private final static int DELAY = 20;
 
@@ -42,6 +46,9 @@ public class Board extends JPanel implements ActionListener {
         player = EntityFactory.makePlayer(new Vector2d(0,0));
         entities.add(player);
 
+        items = new ArrayList<>();
+        items.add(new Item(10, Tile.ice, new Vector2d(50,50)));
+
         addKeyListener(new TAdapter((PlayerController) player.getController()));
 
         timer = new Timer(DELAY, this);
@@ -63,6 +70,10 @@ public class Board extends JPanel implements ActionListener {
             entityLayer.drawEntity(entity, deltaTime);
         }
 
+        for (Item item: items) {
+            entityLayer.drawItem(item);
+        }
+
 
         baseLayer.paint(g);
         entityLayer.paint(g);
@@ -79,6 +90,16 @@ public class Board extends JPanel implements ActionListener {
             entity.move(deltaTime,baseLayer);
             entity.place(baseLayer, deltaTime);
         }
+
+        ((PlayerController)player.getController()).getInventory().collect(items,player.getPosition());
+
+        ArrayList<Item> toBeRemoved = new ArrayList<>();
+        for (Item item: items) {
+            if (item.shouldBeDestroyed()) {
+                toBeRemoved.add(item);
+            }
+        }
+        items.removeAll(toBeRemoved);
 
         repaint();
     }

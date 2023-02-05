@@ -11,12 +11,19 @@ public class PlayerController implements EntityController {
     private final boolean[] directions;
     private final Inventory inventory;
 
+    public Inventory getInventory() {
+        return inventory;
+    }
+
     public PlayerController(Inventory inventory) {
         this.inventory = inventory;
         directions = new boolean[]{false, false, false, false};
     }
     @Override
     public Tuple2d getDirection() {
+
+
+
         Vector2d dir = new Vector2d(0,0);
         if (directions[0] && !directions[1]) {
             dir.x = -1;
