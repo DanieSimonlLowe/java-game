@@ -1,4 +1,4 @@
-import Display.Board;
+import display.Board;
 
 import java.awt.*;
 import javax.swing.JFrame;

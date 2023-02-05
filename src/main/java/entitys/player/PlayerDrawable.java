@@ -1,6 +1,6 @@
-package Entitys.Player;
+package entitys.player;
 
-import Display.Drawable;
+import display.Drawable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +18,15 @@ public class PlayerDrawable implements Drawable {
         this.inventory = inventory;
     }
 
+    private BufferedImage bufferedImage;
+
     @Override
     public Image draw(double deltaTime) {
-        BufferedImage bufferedImage = new BufferedImage(getWidth(),getHeight(),TYPE_INT_ARGB);
+        if (!inventory.getHasChanged()) {
+            return bufferedImage;
+        }
+
+        bufferedImage = new BufferedImage(getWidth(),getHeight(),TYPE_INT_ARGB);
         Graphics2D g2d = bufferedImage.createGraphics();
         g2d.drawImage(bottomIcon.getImage(),0,0,null);
         //g2d.dispose();

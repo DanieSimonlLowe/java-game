@@ -1,6 +1,6 @@
-package Entitys;
+package entitys;
 
-import Display.Layer;
+import display.Layer;
 
 import javax.vecmath.Vector2d;
 import java.awt.*;

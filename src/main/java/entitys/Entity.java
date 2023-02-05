@@ -1,11 +1,11 @@
-package Entitys;
+package entitys;
 
 import java.awt.*;
 import javax.vecmath.*;
-import Background.Tile;
-import Background.TileUtills;
-import Display.Drawable;
-import Display.Layer;
+import background.Tile;
+import background.TileUtils;
+import display.Drawable;
+import display.Layer;
 
 public class Entity {
     private Tile[] weaknesses;
@@ -101,7 +101,7 @@ public class Entity {
         boolean onIce = false;
         for (int i = 0; i<testPointCount;i++) {
             Color pixColor = base.getColor(testPoints[i][0],testPoints[i][1]);
-            testTile[i] = TileUtills.getTileFromColor(pixColor);
+            testTile[i] = TileUtils.getTileFromColor(pixColor);
 
             if (testTile[i] == Tile.goo) {
                 onGoo = true;
@@ -114,43 +114,41 @@ public class Entity {
             health -= 2;
         } else if (isWeakness(testTile[1])) {
             health -= 1;
-            dir = new Vector2d(0,-1);
+            dir = new Vector2d(0,1);
         } else if (isWeakness(testTile[2])) {
             health -= 1;
-            dir = new Vector2d(-1,0);
+            dir = new Vector2d(1,0);
         } else if (isWeakness(testTile[3])) {
             health -= 1;
-            dir = new Vector2d(0,1);
+            dir = new Vector2d(0,-1);
         } else if (isWeakness(testTile[4])) {
             health -= 1;
-            dir = new Vector2d(1,0);
+            dir = new Vector2d(-1,0);
         }
         if ((oldDir.x != 0 || oldDir.y != 0) && onIce) {
             dir = oldDir;
         }
-        if (testTile[1] == Tile.wall && dir.y > 0) {
+        if (testTile[1] == Tile.wall && dir.y < 0) { // top
             dir.y = 0;
         }
-        if (testTile[2] == Tile.wall && dir.x > 0) {
+        if (testTile[2] == Tile.wall && dir.x < 0) { // left
             dir.x = 0;
         }
-        if (testTile[3] == Tile.wall && dir.y < 0) {
+        if (testTile[3] == Tile.wall && dir.y > 0) { // bottom
             dir.y = 0;
         }
-        if (testTile[4] == Tile.wall) {
-            if (dir.x < 0) {
-                dir.x = 0;
-            }
+        if (testTile[4] == Tile.wall && dir.x > 0) { // right
+            dir.x = 0;
         }
 
 
         if (dir.x != 0 || dir.y != 0) {
             double malt = speed*deltaTime;
             if (onGoo) {
-                malt *= TileUtills.gooMalt;
+                malt *= TileUtils.gooMalt;
             }
             if (onIce) {
-                malt *= TileUtills.iceMalt;
+                malt *= TileUtils.iceMalt;
             }
             position.x += dir.x * malt;
             position.y += dir.y * malt;

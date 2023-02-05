@@ -1,7 +1,8 @@
-package Display;
+package display;
 
-import Entitys.Entity;
-import Items.Item;
+import background.TileUtils;
+import entitys.Entity;
+import items.Item;
 
 import javax.vecmath.Vector2d;
 import java.awt.*;
@@ -58,8 +59,7 @@ public class Layer {
         drawImage(item.getImage(),item.getPosX(),item.getPosY());
     }
 
-    public void drawColorImage(Vector2d postion, Color color, Image image) {
-        //g2d.setColor(color);
+    public void drawColorImage(Vector2d position, Color color, Image image) {
         int width = image.getWidth(null);
         int height = image.getHeight(null);
 
@@ -71,8 +71,8 @@ public class Layer {
         WritableRaster outRaster = this.image.getRaster();
         Raster inRaster = colorImage.getRaster();
 
-        int screenX = (int) postion.getX();
-        int screenY = (int) postion.getY();
+        int screenX = (int) position.getX();
+        int screenY = (int) position.getY();
 
         for (int ix = 0; ix < width; ix++) {
             for (int iy = 0; iy < height; iy++) {
@@ -86,7 +86,11 @@ public class Layer {
                 }
             }
         }
+    }
 
+    public void drawRect(background.Tile tile, int x, int y, int width, int height) {
+        g2d.setColor(TileUtils.getTileColor(tile));
+        g2d.fillRect(x,y,width,height);
     }
 
     public Color getColor(int x, int y) {

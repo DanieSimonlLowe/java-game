@@ -1,8 +1,8 @@
-package Background;
+package background;
 
 import java.awt.*;
 
-public class TileUtills {
+public class TileUtils {
     static final public Color iceColor = new Color(160,160,255);
     static final public Color gooColor = new Color(100,255,50);
     static final public Color wallColor = new Color(200,200,200);

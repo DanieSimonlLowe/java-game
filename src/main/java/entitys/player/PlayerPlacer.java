@@ -1,8 +1,8 @@
-package Entitys.Player;
+package entitys.player;
 
-import Background.TileUtills;
-import Display.Layer;
-import Entitys.EntityPlacer;
+import background.TileUtils;
+import display.Layer;
+import entitys.EntityPlacer;
 
 import javax.vecmath.Vector2d;
 import java.awt.*;
@@ -18,7 +18,7 @@ public class PlayerPlacer implements EntityPlacer {
     @Override
     public void place(Layer base, Vector2d position, Image image, double deltaTime) {
         if (inventory.isPlacing()) {
-            base.drawColorImage(position, TileUtills.getTileColor(inventory.getCurrentTile()), image);
+            base.drawColorImage(position, TileUtils.getTileColor(inventory.getCurrentTile()), image);
             inventory.useCurrent(deltaTime);
         }
     }

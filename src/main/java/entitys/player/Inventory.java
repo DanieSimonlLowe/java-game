@@ -1,8 +1,8 @@
-package Entitys.Player;
+package entitys.player;
 
-import Background.Tile;
-import Background.TileUtills;
-import Items.Item;
+import background.Tile;
+import background.TileUtils;
+import items.Item;
 
 import javax.vecmath.Vector2d;
 import java.awt.*;
@@ -12,10 +12,24 @@ import java.awt.image.BufferedImage;
 public class Inventory {
     static final double maxSpace = 30;
     static private final Tile[] tilePos = {Tile.ice,Tile.goo,Tile.oil};
+    static private final double[] useMalt = {TileUtils.iceMalt, TileUtils.gooMalt,0.1};
     private int selected;
     private final double[] tileSpace;
     private double spaceUsed;
 
+    private boolean hasChanged;
+
+    public boolean getHasChanged() {
+        return hasChanged;
+    }
+
+    private void resetChanged() {
+        hasChanged = false;
+    }
+
+    private void setChanged() {
+        hasChanged = true;
+    }
     protected boolean inUse;
 
     public Inventory() {
@@ -32,6 +46,7 @@ public class Inventory {
             tileSpace[getTilePos(tile)] += amount;
             spaceUsed += amount;
         }
+        setChanged();
     }
 
     public boolean isPlacing() {
@@ -48,6 +63,7 @@ public class Inventory {
                 selected = 0;
             }
         } while (tileSpace[selected] == 0);
+        setChanged();
     }
 
     public void selectDown() {
@@ -60,6 +76,7 @@ public class Inventory {
                 selected = tilePos.length-1;
             }
         } while (tileSpace[selected] == 0);
+        setChanged();
     }
 
     private int getTilePos(Tile tile) {
@@ -76,14 +93,16 @@ public class Inventory {
     }
 
     public void useCurrent(double deltaTime) {
-        spaceUsed -= deltaTime;
-        tileSpace[selected] -= deltaTime;
+        spaceUsed -= useMalt[selected] * deltaTime;
+        tileSpace[selected] -= useMalt[selected] * deltaTime;
         if (spaceUsed < 0) {
             spaceUsed = 0;
         }
-        if (tileSpace[selected] < 0) {
+        if (tileSpace[selected] <= 0) {
             tileSpace[selected] = 0;
+            selectUp();
         }
+        setChanged();
     }
 
     static final private double circleConst = 1/Math.sqrt(2);
@@ -108,7 +127,7 @@ public class Inventory {
                 continue;
             }
 
-            g2d.setColor(TileUtills.getTileColor(tilePos[i]));
+            g2d.setColor(TileUtils.getTileColor(tilePos[i]));
 
             int amount = (int) Math.round(tileSpace[i]/maxSpace*height);
             while (amount > 0) {
@@ -134,6 +153,7 @@ public class Inventory {
             }
         } while (i != selected);
         g2d.dispose();
+        resetChanged();
     }
 
     public void addItem(Item item) {

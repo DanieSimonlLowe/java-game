@@ -1,6 +1,6 @@
-package Entitys;
+package entitys;
 
 import javax.vecmath.*;
 public interface EntityController {
-    public Tuple2d getDirection();
+    Tuple2d getDirection();
 }

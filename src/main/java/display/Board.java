@@ -1,11 +1,10 @@
-package Display;
+package display;
 
-import Background.Tile;
-import Entitys.Entity;
-import Entitys.EntityFactory;
-import Entitys.Player.PlayerController;
-import Entitys.Player.TAdapter;
-import Items.Item;
+import entitys.Entity;
+import entitys.EntityFactory;
+import entitys.player.PlayerController;
+import entitys.player.TAdapter;
+import items.Item;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -47,7 +46,7 @@ public class Board extends JPanel implements ActionListener {
         entities.add(player);
 
         items = new ArrayList<>();
-        items.add(new Item(10, Tile.ice, new Vector2d(50,50)));
+        //items.add(new Item(10, Tile.ice, new Vector2d(50,50)));
 
         addKeyListener(new TAdapter((PlayerController) player.getController()));
 
@@ -55,10 +54,12 @@ public class Board extends JPanel implements ActionListener {
         timer.start();
 
 
+
         setFocusable(true);
 
         oldTime = System.nanoTime();
     }
+
 
 
     @Override

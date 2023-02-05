@@ -1,11 +1,11 @@
-package Entitys;
+package entitys;
 
 import javax.vecmath.Vector2d;
-import Background.Tile;
-import Entitys.Player.Inventory;
-import Entitys.Player.PlayerController;
-import Entitys.Player.PlayerDrawable;
-import Entitys.Player.PlayerPlacer;
+import background.Tile;
+import entitys.player.Inventory;
+import entitys.player.PlayerController;
+import entitys.player.PlayerDrawable;
+import entitys.player.PlayerPlacer;
 
 public class EntityFactory {
 
