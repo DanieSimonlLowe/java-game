@@ -13,7 +13,7 @@ import java.awt.image.WritableRaster;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 public class Layer {
-    private final BufferedImage image;
+    protected BufferedImage image;
     private final int width;
     private final int height;
 
@@ -28,7 +28,7 @@ public class Layer {
         return height;
     }
 
-    Layer(int width, int height) {
+    public Layer(int width, int height) {
         this.width = width;
         this.height = height;
         image = new BufferedImage(width, height,TYPE_INT_ARGB);
@@ -60,6 +60,7 @@ public class Layer {
     }
 
     public void drawColorImage(Vector2d position, Color color, Image image) {
+
         int width = image.getWidth(null);
         int height = image.getHeight(null);
 
@@ -86,6 +87,7 @@ public class Layer {
                 }
             }
         }
+
     }
 
     public void drawRect(background.Tile tile, int x, int y, int width, int height) {
@@ -94,6 +96,7 @@ public class Layer {
     }
 
     public Color getColor(int x, int y) {
+
         int clr = image.getRGB(x,y);
         int red =   (clr & 0x00ff0000) >> 16;
         int green = (clr & 0x0000ff00) >> 8;
@@ -101,9 +104,13 @@ public class Layer {
         return new Color(red,green,blue);
     }
 
+
+
     void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.drawImage(image,0,0,null);
-
     }
+
+
+
 }

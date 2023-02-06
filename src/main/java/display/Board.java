@@ -1,5 +1,6 @@
 package display;
 
+import background.Tile;
 import entitys.Entity;
 import entitys.EntityFactory;
 import entitys.player.PlayerController;
@@ -16,13 +17,12 @@ import javax.vecmath.Vector2d;
 
 public class Board extends JPanel implements ActionListener {
 
-    private final Layer baseLayer;
+    private final Base baseLayer;
     private final Layer entityLayer;
 
     private final List<Entity> entities;
     private final List<Item> items;
 
-    private final Timer timer;
     private final static int DELAY = 20;
 
     private long oldTime;
@@ -30,16 +30,20 @@ public class Board extends JPanel implements ActionListener {
     private final Entity player;
     private double deltaTime;
 
+
     public Board() {
         super();
+        baseDeltaTime = 0;
+
         setBackground(Color.black);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int)screenSize.getWidth();
         int height = (int)screenSize.getHeight();
 
-        baseLayer = new Layer(width,height);
+        baseLayer = new Base(width,height);
         entityLayer = new Layer(width,height);
+
         entities = new ArrayList<>();
 
         player = EntityFactory.makePlayer(new Vector2d(0,0));
@@ -50,14 +54,17 @@ public class Board extends JPanel implements ActionListener {
 
         addKeyListener(new TAdapter((PlayerController) player.getController()));
 
-        timer = new Timer(DELAY, this);
+        Timer timer = new Timer(DELAY, this);
         timer.start();
 
 
         setFocusable(true);
 
         oldTime = System.nanoTime();
+
+        baseLayer.drawRect(Tile.fire,100,100,100,100);
     }
+
 
 
 
@@ -75,12 +82,13 @@ public class Board extends JPanel implements ActionListener {
         }
 
 
+
         baseLayer.paint(g);
         entityLayer.paint(g);
 
     }
 
-
+    double baseDeltaTime;
     @Override
     public void actionPerformed(ActionEvent e) {
         long newTime = System.nanoTime();
@@ -92,6 +100,14 @@ public class Board extends JPanel implements ActionListener {
         }
 
         ((PlayerController)player.getController()).getInventory().collect(items,player.getPosition());
+
+        if (baseDeltaTime > 0.25) {
+            baseLayer.tickBoard();
+            baseDeltaTime = 0;
+        } else {
+            baseDeltaTime += deltaTime;
+        }
+
 
         ArrayList<Item> toBeRemoved = new ArrayList<>();
         for (Item item: items) {

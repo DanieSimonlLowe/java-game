@@ -1,1 +1,5 @@
-org\example\AppTest.class
+background\TileUtilsTest.class
+entitys\testPlacer.class
+entitys\EntityTest.class
+entitys\testDrawable.class
+entitys\testController.class

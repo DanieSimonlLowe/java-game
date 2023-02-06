@@ -16,6 +16,8 @@ public class EntityFactory {
         inventory.addTile(Tile.goo, 10);
         inventory.addTile(Tile.oil, 20);
 
-        return new Entity(weaknesses,5,100,position,new PlayerController(inventory),new PlayerPlacer(inventory),new PlayerDrawable(inventory));
+        return new Entity(weaknesses,8,100,position,new PlayerController(inventory),new PlayerPlacer(inventory),new PlayerDrawable(inventory));
     }
+
+    //TODO create
 }
