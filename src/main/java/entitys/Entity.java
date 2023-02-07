@@ -250,6 +250,11 @@ public class Entity {
         return position;
     }
 
+    public boolean shouldBeDestroyed() {
+        return health <= 0;
+    }
+
+
     public void place(Base base, double deltaTime) {
         Vector2d vector = new Vector2d(getPosX()+extraSize,getPosY()+extraSize);
 

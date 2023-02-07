@@ -63,8 +63,9 @@ public class Board extends JPanel implements ActionListener {
 
         oldTime = System.nanoTime();
 
-        baseLayer.drawRect(Tile.fire,100,100,100,100);
-        baseLayer.drawRect(Tile.wall, 300,100,100,100);
+
+        baseLayer.drawRect(Tile.wall, 100,100,100,100);
+        entities.add(EntityFactory.makeChaser(new Vector2d(400,400),player));
     }
 
 
@@ -96,19 +97,18 @@ public class Board extends JPanel implements ActionListener {
         long newTime = System.nanoTime();
         deltaTime = (newTime - oldTime)/1e+9;
         oldTime = newTime;
+
+        ArrayList<Entity> toBeRemoved0 = new ArrayList<>();
         for (Entity entity: entities) {
             entity.move(deltaTime,baseLayer);
             entity.place(baseLayer, deltaTime);
+            if (entity.shouldBeDestroyed()) {
+                toBeRemoved0.add(entity);
+            }
         }
+        entities.removeAll(toBeRemoved0);
 
         ((PlayerController)player.getController()).getInventory().collect(items,player.getPosition());
-
-        if (baseDeltaTime > 0.25) {
-            baseLayer.tickBoard();
-            baseDeltaTime = 0;
-        } else {
-            baseDeltaTime += deltaTime;
-        }
 
 
         ArrayList<Item> toBeRemoved = new ArrayList<>();
@@ -118,6 +118,14 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         items.removeAll(toBeRemoved);
+
+
+        if (baseDeltaTime > 0.25) {
+            baseLayer.tickBoard();
+            baseDeltaTime = 0;
+        } else {
+            baseDeltaTime += deltaTime;
+        }
 
         repaint();
     }

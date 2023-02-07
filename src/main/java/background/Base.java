@@ -37,16 +37,10 @@ public class Base extends Layer {
     }
 
     private void addNextToWatching(int x, int y,int proirty) {
-        int temp = random.nextInt(4);
-        if (temp == 0) {
-            addToWatching(x+1,y,proirty);
-        } else if (temp == 1) {
-            addToWatching(x-1,y,proirty);
-        } else if (temp == 2) {
-            addToWatching(x,y+1,proirty);
-        } else {
-            addToWatching(x,y-1,proirty);
-        }
+        addToWatching(x+1,y,proirty + random.nextInt(100));
+        addToWatching(x-1,y,proirty + random.nextInt(100));
+        addToWatching(x,y+1,proirty + random.nextInt(100));
+        addToWatching(x,y-1,proirty + random.nextInt(100));
 
     }
 
