@@ -129,7 +129,7 @@ public class Inventory {
 
             g2d.setColor(TileUtils.getTileColor(tilePos[i]));
 
-            int amount = (int) Math.round(tileSpace[i]/maxSpace*height);
+            int amount = (int) Math.floor(tileSpace[i]/maxSpace*height*height/4*Math.PI);
             while (amount > 0) {
                 int h;
                 if (amount > maxSpace/circleRectNum) {
@@ -139,7 +139,7 @@ public class Inventory {
                 }
                 int valX = getCircleX(sumY,height);
                 g2d.fillRect(width/2-valX,sumY,valX*2,h);
-                amount -= h;
+                amount -= h*valX*2;
                 sumY -= h;
             }
 
