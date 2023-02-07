@@ -1,5 +1,6 @@
 package background;
 
+import background.tasks.FindOilTask;
 import background.tasks.OilTask;
 import background.tasks.PixelTask;
 import background.tasks.QueuedTask;
@@ -16,14 +17,16 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 public class Base extends Layer {
 
+    private final Random random;
     public Base(int width, int height) {
         super(width,height);
         watching = new PriorityQueue<>();
+        random = new Random();
     }
 
     static final int pixelsChecked = 100;
     static final int maxWatchTick = 100;
-    PriorityQueue<QueuedTask> watching;
+    public PriorityQueue<QueuedTask> watching;
 
 
     private void addToWatching(int x, int y, int proirty) {
@@ -34,27 +37,15 @@ public class Base extends Layer {
     }
 
     private void addNextToWatching(int x, int y,int proirty) {
-        int temp = hash((x ^ y)) & 3;
+        int temp = random.nextInt(4);
         if (temp == 0) {
             addToWatching(x+1,y,proirty);
-            addToWatching(x-1,y,proirty);
-            addToWatching(x,y+1,proirty);
-            addToWatching(x,y-1,proirty);
         } else if (temp == 1) {
             addToWatching(x-1,y,proirty);
-            addToWatching(x,y+1,proirty);
-            addToWatching(x,y-1,proirty);
-            addToWatching(x+1,y,proirty);
         } else if (temp == 2) {
             addToWatching(x,y+1,proirty);
-            addToWatching(x,y-1,proirty);
-            addToWatching(x+1,y,proirty);
-            addToWatching(x-1,y,proirty);
         } else {
             addToWatching(x,y-1,proirty);
-            addToWatching(x+1,y,proirty);
-            addToWatching(x-1,y,proirty);
-            addToWatching(x,y+1,proirty);
         }
 
     }
@@ -88,10 +79,9 @@ public class Base extends Layer {
                 int[] testPixel = outRaster.getPixel(i+x, j+y, (int[]) null);
                 if (testPixel[0] == TileUtils.oilColor.getRed() && testPixel[1] == TileUtils.oilColor.getGreen() && testPixel[2] == TileUtils.oilColor.getBlue()) {
 
-                    int maxOilDeapth = 20;
+                    int maxOilDeapth = 6;
                     if (deapth == maxOilDeapth) {
-                        //addToWatching(i+x,j+y,10);
-                        watching.add(new OilTask(i+x,j+y,10));
+                        watching.add(new OilTask(i+x,j+y,10+random.nextInt(40)));
                     } else {
 
 
@@ -103,49 +93,48 @@ public class Base extends Layer {
         }
     }
 
+    private void fireTick(int x, int y, WritableRaster outRaster) {
+        int[] out = {0,0,0,0};
+        outRaster.setPixel(x,y,out);
+    }
+
+    public void oilTick(int x, int y, WritableRaster outRaster) {
+        for (int i = -oilLightSize; i <= oilLightSize; i++) {
+            if (i+x < 0 | i+x >= getWidth()) {
+                continue;
+            }
+            for (int j = -oilLightSize; j <= oilLightSize; j++) {
+                if (j+y < 0 | j+y >= getHeight()) {
+                    continue;
+                }
+                int[] testPixel = outRaster.getPixel(i+x, j+y, (int[]) null);
+                if (testPixel[0] == TileUtils.fireColor.getRed() && testPixel[1] == TileUtils.fireColor.getGreen() && testPixel[2] == TileUtils.fireColor.getBlue()) {
+                    lightOilInit(x+i,y+j,outRaster);
+                    return;
+                }
+            }
+        }
+    }
+
+
+    public final static int oilLightSize = 3;
     public void tickPixel(int x, int y, WritableRaster outRaster) {
         int[] pixel = outRaster.getPixel(x, y, (int[]) null);
 
         if (pixel[0] == TileUtils.fireColor.getRed() && pixel[1] == TileUtils.fireColor.getGreen() && pixel[2] == TileUtils.fireColor.getBlue()) {
-            int[] out = {0,0,0,0};
-            outRaster.setPixel(x,y,out);
+            fireTick(x,y,outRaster);
             addNextToWatching(x,y,900);
-
-
-
         } else if (pixel[0] == TileUtils.oilColor.getRed() && pixel[1] == TileUtils.oilColor.getGreen() && pixel[2] == TileUtils.oilColor.getBlue()) {
-
-            for (int i = -1; i <= 1; i++) {
-                if (i+x < 0 | i+x >= getWidth()) {
-                    continue;
-                }
-                for (int j = -1; j <= 1; j++) {
-                    if (j+y < 0 | j+y >= getHeight()) {
-                        continue;
-                    }
-                    int[] testPixel = outRaster.getPixel(i+x, j+y, (int[]) null);
-                    if (testPixel[0] == TileUtils.fireColor.getRed() && testPixel[1] == TileUtils.fireColor.getGreen() && testPixel[2] == TileUtils.fireColor.getBlue()) {
-                        lightOilInit(x+i,y+j,outRaster);
-                        return;
-                    }
-                }
-            }
-
-
+            oilTick(x,y,outRaster);
+            watching.add(new FindOilTask(x,y+oilLightSize*2,800, FindOilTask.Direction.up));
+            watching.add(new FindOilTask(x,y-oilLightSize*2,800,FindOilTask.Direction.down));
+            watching.add(new FindOilTask(x-oilLightSize*2,y,800,FindOilTask.Direction.left));
+            watching.add(new FindOilTask(x+oilLightSize*2,y,800,FindOilTask.Direction.right));
         }
     }
 
-    private int hash(int a) {
-        a = (a ^ 61) ^ (a >> 16);
-        a = a + (a << 3);
-        a = a ^ (a >> 4);
-        a = a * 0x27d4eb2d;
-        a = a ^ (a >> 15);
-        return a;
-    }
 
 
-    int tickBoardPos = 0;
     public void tickBoard() {
 
         WritableRaster outRaster = image.getRaster();
@@ -164,21 +153,12 @@ public class Base extends Layer {
         }
 
         for (int i = 0; i<pixelsChecked; i++) {
-            int pos = tickBoardPos + i;
-            int x = hash(pos) % image.getWidth();
+            int x = random.nextInt(image.getWidth());
 
-            int y = hash(~pos) % image.getHeight();
+            int y = random.nextInt(image.getHeight());
 
-
-            if (x < 0) {
-                x += image.getWidth();
-            }
-            if (y < 0) {
-                y += image.getHeight();
-            }
             tickPixel(x,y,outRaster );
         }
-        tickBoardPos += pixelsChecked;
 
     }
 

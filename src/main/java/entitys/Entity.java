@@ -168,16 +168,12 @@ public class Entity {
             takeDamage(2);
         } else if (isWeakness(testTile[1])) {
             takeDamage(1);
-            dir = new Vector2d(0,1);
         } else if (isWeakness(testTile[2])) {
             takeDamage(1);
-            dir = new Vector2d(1,0);
         } else if (isWeakness(testTile[3])) {
             takeDamage(1);
-            dir = new Vector2d(0,-1);
         } else if (isWeakness(testTile[4])) {
             takeDamage(1);
-            dir = new Vector2d(-1,0);
         }
         if ((oldDir.x != 0 || oldDir.y != 0) && onIce) {
             dir = oldDir;
