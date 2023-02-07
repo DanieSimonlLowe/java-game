@@ -1,0 +1,24 @@
+package entitys.ai;
+
+import entitys.Entity;
+import entitys.EntityController;
+
+import javax.vecmath.Tuple2d;
+import javax.vecmath.Vector2d;
+
+public class ChaseAi implements EntityController {
+
+    private final Entity chasing;
+
+    public ChaseAi(Entity chasing) {
+        this.chasing = chasing;
+    }
+
+    @Override
+    public Tuple2d getDirection(Vector2d position) {
+        Vector2d dir = (Vector2d)chasing.getPosition().clone();
+        dir.scaleAdd(-1,position);
+        dir.normalize();
+        return dir;
+    }
+}

@@ -45,4 +45,9 @@ public class TileUtils {
             return Tile.none;
         }
     }
+
+    static public int[] getIntArrayFromTile(Tile tile) {
+        Color color = getTileColor(tile);
+        return new int[]{color.getRed(),color.getGreen(),color.getBlue(),color.getAlpha()};
+    }
 }

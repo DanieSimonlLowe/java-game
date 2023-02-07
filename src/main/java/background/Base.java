@@ -5,8 +5,14 @@ import background.tasks.PixelTask;
 import background.tasks.QueuedTask;
 import display.Layer;
 
+import javax.vecmath.Vector2d;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.*;
+
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 public class Base extends Layer {
 
@@ -15,9 +21,10 @@ public class Base extends Layer {
         watching = new PriorityQueue<>();
     }
 
-    static final int pixelsChecked = 50;
+    static final int pixelsChecked = 100;
     static final int maxWatchTick = 100;
     PriorityQueue<QueuedTask> watching;
+
 
     private void addToWatching(int x, int y, int proirty) {
         if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
@@ -25,7 +32,6 @@ public class Base extends Layer {
         }
         watching.add(new PixelTask(x,y,proirty));
     }
-
 
     private void addNextToWatching(int x, int y,int proirty) {
         int temp = hash((x ^ y)) & 3;
@@ -82,7 +88,7 @@ public class Base extends Layer {
                 int[] testPixel = outRaster.getPixel(i+x, j+y, (int[]) null);
                 if (testPixel[0] == TileUtils.oilColor.getRed() && testPixel[1] == TileUtils.oilColor.getGreen() && testPixel[2] == TileUtils.oilColor.getBlue()) {
 
-                    int maxOilDeapth = 5;
+                    int maxOilDeapth = 20;
                     if (deapth == maxOilDeapth) {
                         //addToWatching(i+x,j+y,10);
                         watching.add(new OilTask(i+x,j+y,10));
@@ -103,7 +109,7 @@ public class Base extends Layer {
         if (pixel[0] == TileUtils.fireColor.getRed() && pixel[1] == TileUtils.fireColor.getGreen() && pixel[2] == TileUtils.fireColor.getBlue()) {
             int[] out = {0,0,0,0};
             outRaster.setPixel(x,y,out);
-            //addNextToWatching(x,y,100);
+            addNextToWatching(x,y,900);
 
 
 
@@ -174,6 +180,48 @@ public class Base extends Layer {
         }
         tickBoardPos += pixelsChecked;
 
+    }
 
+    public void drawTile(Vector2d position, Tile tile, Image image) {
+
+
+        int width = image.getWidth(null);
+        int height = image.getHeight(null);
+
+        BufferedImage colorImage = new BufferedImage(width,height, TYPE_INT_ARGB);
+        Graphics2D g2 = colorImage.createGraphics();
+        g2.drawImage(image,0,0,null);
+        g2.dispose();
+
+        WritableRaster outRaster = this.image.getRaster();
+        Raster inRaster = colorImage.getRaster();
+
+        int screenX = (int) position.getX();
+        int screenY = (int) position.getY();
+
+        for (int ix = 0; ix < width; ix++) {
+            for (int iy = 0; iy < height; iy++) {
+                int[] pixel1 = outRaster.getPixel(screenX+ix,screenY+iy,(int[]) null);
+                int[] wall = TileUtils.getIntArrayFromTile(Tile.wall);
+                if (pixel1[0] == wall[0] && pixel1[1] == wall[1] && pixel1[2] == wall[2]) {
+                    continue;
+                }
+                int[] pixel2 = inRaster.getPixel(ix, iy, (int[]) null);
+                if (pixel2[3] != 0) {
+                    outRaster.setPixel(screenX+ix,screenY+iy,TileUtils.getIntArrayFromTile(tile));
+                }
+            }
+        }
+
+    }
+
+    public void drawRect(background.Tile tile, int x, int y, int width, int height) {
+        super.g2d.setColor(TileUtils.getTileColor(tile));
+        super.g2d.fillRect(x,y,width,height);
+    }
+
+    public Tile getTile(int x, int y) {
+        Color color = getColor(x,y);
+        return TileUtils.getTileFromColor(color);
     }
 }

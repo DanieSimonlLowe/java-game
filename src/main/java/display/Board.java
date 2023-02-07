@@ -64,6 +64,7 @@ public class Board extends JPanel implements ActionListener {
         oldTime = System.nanoTime();
 
         baseLayer.drawRect(Tile.fire,100,100,100,100);
+        baseLayer.drawRect(Tile.wall, 300,100,100,100);
     }
 
 

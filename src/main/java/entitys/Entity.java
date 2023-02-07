@@ -3,10 +3,11 @@ package entitys;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.vecmath.*;
+
+import background.Base;
 import background.Tile;
 import background.TileUtils;
 import display.Drawable;
-import display.Layer;
 
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
@@ -69,8 +70,8 @@ public class Entity {
             new Color(200,20,150), // 3
             new Color(100,20,200), // 4
             new Color(100,150,255), // 5
-            new Color(50,255,120), // 6
-            new Color(255,215,0), // 7
+            new Color(0,255,150), // 6
+            new Color(255,170,0), // 7
     };
     private final static int extraSize = 5;
 
@@ -110,15 +111,15 @@ public class Entity {
         points[0][1] = extraSize+getPosY()+drawable.getHeight()/2;
         //top
         points[1][0] = extraSize+getPosX()+drawable.getWidth()/2;
-        points[1][1] = extraSize+getPosY();
+        points[1][1] = extraSize+getPosY()-1;
         //left
-        points[2][0] = extraSize+getPosX();
+        points[2][0] = extraSize+getPosX()-1;
         points[2][1] = extraSize+getPosY()+drawable.getHeight()/2;
         //bottom
         points[3][0] = extraSize+getPosX()+drawable.getWidth()/2;
-        points[3][1] = extraSize+getPosY()+drawable.getHeight();
+        points[3][1] = extraSize+getPosY()+drawable.getHeight()+2;
         //right
-        points[4][0] = extraSize+getPosX()+drawable.getWidth();
+        points[4][0] = extraSize+getPosX()+drawable.getWidth()+2;
         points[4][1] = extraSize+getPosY()+drawable.getHeight()/2;
         return points;
     }
@@ -142,11 +143,11 @@ public class Entity {
         }
     }
 
-    public void move(double deltaTime, Layer base) {
+    public void move(double deltaTime, Base base) {
         if (controller == null) {
             return;
         }
-        Tuple2d dir = controller.getDirection();
+        Tuple2d dir = controller.getDirection(position);
 
         //center top left bottom right
         int[][] testPoints = getTestPoints();
@@ -154,8 +155,7 @@ public class Entity {
         boolean onGoo = false;
         boolean onIce = false;
         for (int i = 0; i<testPointCount;i++) {
-            Color pixColor = base.getColor(testPoints[i][0],testPoints[i][1]);
-            testTile[i] = TileUtils.getTileFromColor(pixColor);
+            testTile[i] = base.getTile(testPoints[i][0],testPoints[i][1]);
 
             if (testTile[i] == Tile.goo) {
                 onGoo = true;
@@ -182,17 +182,37 @@ public class Entity {
         if ((oldDir.x != 0 || oldDir.y != 0) && onIce) {
             dir = oldDir;
         }
-        if (testTile[1] == Tile.wall && dir.y < 0) { // top
-            dir.y = 0;
+        if (testTile[1] == Tile.wall) {
+            if (base.getTile(testPoints[1][0],testPoints[1][1]-1) == Tile.wall) {
+                dir.y = 1;
+                dir.x = 0;
+            } else if (dir.y < 0) {
+                dir.y = 0;
+            }
         }
-        if (testTile[2] == Tile.wall && dir.x < 0) { // left
-            dir.x = 0;
+        if (testTile[2] == Tile.wall) { // left
+            if (base.getTile(testPoints[2][0]-1,testPoints[2][1]) == Tile.wall) {
+                dir.y = 0;
+                dir.x = 1;
+            } else if (dir.x < 0) {
+                dir.x = 0;
+            }
         }
-        if (testTile[3] == Tile.wall && dir.y > 0) { // bottom
-            dir.y = 0;
+        if (testTile[3] == Tile.wall) { // bottom
+            if (base.getTile(testPoints[3][0],testPoints[3][1]+1) == Tile.wall) {
+                dir.y = -1;
+                dir.x = 0;
+            } else if (dir.y > 0) {
+                dir.y = 0;
+            }
         }
-        if (testTile[4] == Tile.wall && dir.x > 0) { // right
-            dir.x = 0;
+        if (testTile[4] == Tile.wall) { // right
+            if (base.getTile(testPoints[4][0]+1,testPoints[4][1]) == Tile.wall) {
+                dir.y = 0;
+                dir.x = -1;
+            } else if (dir.x > 0) {
+                dir.x = 0;
+            }
         }
 
 
@@ -234,7 +254,7 @@ public class Entity {
         return position;
     }
 
-    public void place(Layer base, double deltaTime) {
+    public void place(Base base, double deltaTime) {
         Vector2d vector = new Vector2d(getPosX()+extraSize,getPosY()+extraSize);
 
         if (placer != null) {

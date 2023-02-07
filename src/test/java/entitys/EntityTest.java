@@ -1,8 +1,8 @@
 package entitys;
 
+import background.Base;
 import background.Tile;
 import display.Drawable;
-import display.Layer;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -61,7 +61,7 @@ public class EntityTest extends TestCase {
         testDrawable drawable =  new testDrawable();
         Tile[] weaknesses = {Tile.fire};
         Entity entity = new Entity(weaknesses,7,2,new Vector2d(10,10),controller,drawable);
-        Layer base = new Layer(100,100);
+        Base base = new Base(100,100);
 
         entity.move(0.5,base);
         assertEquals(new Vector2d(10,10),entity.getPosition());
@@ -130,7 +130,7 @@ class testController implements EntityController {
         this.dir = dir;
     }
     @Override
-    public Tuple2d getDirection() {
+    public Tuple2d getDirection(Vector2d position) {
         return dir;
     }
 }
@@ -142,7 +142,7 @@ class testPlacer implements EntityPlacer {
     }
 
     @Override
-    public void place(Layer base, Vector2d position, Image image, double deltaTime) {
+    public void place(Base base, Vector2d position, Image image, double deltaTime) {
         position.set(deltaTime,deltaTime);
     }
 }

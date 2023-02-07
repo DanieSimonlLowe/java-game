@@ -1,14 +1,11 @@
 package display;
 
-import background.TileUtils;
 import entitys.Entity;
 import items.Item;
 
-import javax.vecmath.Vector2d;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
+
 
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
@@ -17,7 +14,7 @@ public class Layer {
     private final int width;
     private final int height;
 
-    private final Graphics2D g2d;
+    protected final Graphics2D g2d;
 
 
     public int getWidth() {
@@ -59,41 +56,7 @@ public class Layer {
         drawImage(item.getImage(),item.getPosX(),item.getPosY());
     }
 
-    public void drawColorImage(Vector2d position, Color color, Image image) {
 
-        int width = image.getWidth(null);
-        int height = image.getHeight(null);
-
-        BufferedImage colorImage = new BufferedImage(width,height, TYPE_INT_ARGB);
-        Graphics2D g2 = colorImage.createGraphics();
-        g2.drawImage(image,0,0,null);
-        g2.dispose();
-
-        WritableRaster outRaster = this.image.getRaster();
-        Raster inRaster = colorImage.getRaster();
-
-        int screenX = (int) position.getX();
-        int screenY = (int) position.getY();
-
-        for (int ix = 0; ix < width; ix++) {
-            for (int iy = 0; iy < height; iy++) {
-                int[] pixels = inRaster.getPixel(ix, iy, (int[]) null);
-                if (pixels[3] != 0) {
-                    int[] out = {color.getRed()
-                            ,color.getGreen()
-                            ,color.getBlue()
-                            ,255};
-                    outRaster.setPixel(screenX+ix,screenY+iy,out);
-                }
-            }
-        }
-
-    }
-
-    public void drawRect(background.Tile tile, int x, int y, int width, int height) {
-        g2d.setColor(TileUtils.getTileColor(tile));
-        g2d.fillRect(x,y,width,height);
-    }
 
     public Color getColor(int x, int y) {
 

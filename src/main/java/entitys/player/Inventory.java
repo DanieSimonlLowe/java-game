@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 public class Inventory {
     static final double maxSpace = 30;
     static private final Tile[] tilePos = {Tile.ice,Tile.goo,Tile.oil};
-    static private final double[] useMalt = {TileUtils.iceMalt, TileUtils.gooMalt,0.1};
+    static private final double[] useMalt = {TileUtils.iceMalt*2, TileUtils.gooMalt,0.5};
     private int selected;
     private final double[] tileSpace;
     private double spaceUsed;
