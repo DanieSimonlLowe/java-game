@@ -12,6 +12,7 @@ public class Base extends Layer{
         watching = new PriorityQueue<>();
     }
 
+    static final int pixelsChecked = 50;
     static final int maxWatch = 100;
     PriorityQueue<queuedPoint> watching;
 
@@ -49,25 +50,42 @@ public class Base extends Layer{
 
     }
 
-    private void lightOil(int x, int y, WritableRaster outRaster, int deapth) {
+    private void lightOil(int x, int y, WritableRaster outRaster) {
+        lightOilSub(x,y,outRaster,0,-1,1,-1,1);
+    }
+
+    private void lightOilSub(int x, int y, WritableRaster outRaster, int deapth, int minx, int maxx, int miny, int maxy) {
         final int[] fire = {TileUtils.fireColor.getRed(),TileUtils.fireColor.getGreen(),TileUtils.fireColor.getBlue(),255};
         outRaster.setPixel(x,y,fire);
-        for (int i = -1; i <= 1; i++) {
+        System.out.println("X:" + x + "Y:" + y + " ,D:" + deapth);
+        for (int i = minx; i <= maxx; i++) {
             if ( i + x < 0 | i + x >= getWidth()) {
                 continue;
             }
-            for (int j = -1; j <= 1; j++) {
-                if ( j + y < 0 | j + y >= getHeight()) {
+            for (int j = miny; j <= maxy; j++) {
+                if ( j + y < 0 | j + y >= getHeight() || (i == 0 && j == 0)) {
                     continue;
                 }
+                System.out.println("i:" + i + "j:" + j);
                 int[] testPixel = outRaster.getPixel(i+x, j+y, (int[]) null);
                 if (testPixel[0] == TileUtils.oilColor.getRed() && testPixel[1] == TileUtils.oilColor.getGreen() && testPixel[2] == TileUtils.oilColor.getBlue()) {
-                    int maxOilDeapth = 50;
+                    int maxOilDeapth = 10;
                     if (deapth == maxOilDeapth) {
                         addToWatching(i+x,j+y,10);
                         return;
                     } else {
-                        lightOil(i+x,j+y,outRaster, deapth+1);
+                        int ominx = minx, omaxx = maxx, ominy = miny, omaxy = maxy;
+                        if (i > 0) {
+                            ominx = 1;
+                        } else if (i < 0) {
+                            omaxx = -1;
+                        }
+                        if (j > 0) {
+                            ominy = 1;
+                        } else if (j < 0) {
+                            omaxy = -1;
+                        }
+                        lightOilSub(i+x,j+y,outRaster, deapth+1,ominx,omaxx,ominy,omaxy);
                     }
 
                 }
@@ -97,7 +115,7 @@ public class Base extends Layer{
                     }
                     int[] testPixel = outRaster.getPixel(i+x, j+y, (int[]) null);
                     if (testPixel[0] == TileUtils.fireColor.getRed() && testPixel[1] == TileUtils.fireColor.getGreen() && testPixel[2] == TileUtils.fireColor.getBlue()) {
-                        lightOil(x+i,y+j,outRaster,0);
+                        lightOil(x+i,y+j,outRaster);
                         return;
                     }
                 }
@@ -116,7 +134,7 @@ public class Base extends Layer{
         return a;
     }
 
-    static final int pixelsChecked = 50;
+
     int tickBoardPos = 0;
     public void tickBoard() {
 
