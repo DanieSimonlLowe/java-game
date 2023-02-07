@@ -1,5 +1,6 @@
 package display;
 
+import background.Base;
 import background.Tile;
 import entitys.Entity;
 import entitys.EntityFactory;

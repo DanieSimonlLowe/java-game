@@ -106,7 +106,7 @@ public class Layer {
 
 
 
-    void paint(Graphics g) {
+    protected void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.drawImage(image,0,0,null);
     }

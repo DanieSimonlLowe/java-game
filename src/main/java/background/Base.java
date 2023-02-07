@@ -1,26 +1,29 @@
-package display;
+package background;
 
-import background.TileUtils;
+import background.tasks.OilTask;
+import background.tasks.PixelTask;
+import background.tasks.QueuedTask;
+import display.Layer;
 
 import java.awt.image.WritableRaster;
 import java.util.*;
 
-public class Base extends Layer{
+public class Base extends Layer {
 
-    Base (int width, int height) {
+    public Base(int width, int height) {
         super(width,height);
         watching = new PriorityQueue<>();
     }
 
     static final int pixelsChecked = 50;
-    static final int maxWatch = 100;
-    PriorityQueue<queuedPoint> watching;
+    static final int maxWatchTick = 100;
+    PriorityQueue<QueuedTask> watching;
 
     private void addToWatching(int x, int y, int proirty) {
         if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
             return;
         }
-        watching.add(new queuedPoint(x,y,proirty));
+        watching.add(new PixelTask(x,y,proirty));
     }
 
 
@@ -50,42 +53,43 @@ public class Base extends Layer{
 
     }
 
-    private void lightOil(int x, int y, WritableRaster outRaster) {
-        lightOilSub(x,y,outRaster,0,-1,1,-1,1);
+    private void lightOilInit(int x, int y, WritableRaster outRaster) {
+        lightOil(x,y,outRaster,0);
     }
 
-    private void lightOilSub(int x, int y, WritableRaster outRaster, int deapth, int minx, int maxx, int miny, int maxy) {
+    public boolean lightOilTask(int x, int y, WritableRaster outRaster) {
+
+        int[] pixel = outRaster.getPixel(x, y, (int[]) null);
+        if (pixel[0] == TileUtils.oilColor.getRed() && pixel[1] == TileUtils.oilColor.getGreen() && pixel[2] == TileUtils.oilColor.getBlue()) {
+            lightOil(x,y,outRaster,0);
+            return true;
+        }
+        return false;
+    }
+
+    private void lightOil(int x, int y, WritableRaster outRaster, int deapth) {
         final int[] fire = {TileUtils.fireColor.getRed(),TileUtils.fireColor.getGreen(),TileUtils.fireColor.getBlue(),255};
+
         outRaster.setPixel(x,y,fire);
-        System.out.println("X:" + x + "Y:" + y + " ,D:" + deapth);
-        for (int i = minx; i <= maxx; i++) {
+        for (int i = -1; i <= 1; i++) {
             if ( i + x < 0 | i + x >= getWidth()) {
                 continue;
             }
-            for (int j = miny; j <= maxy; j++) {
+            for (int j = -1; j <= 1; j++) {
                 if ( j + y < 0 | j + y >= getHeight() || (i == 0 && j == 0)) {
                     continue;
                 }
-                System.out.println("i:" + i + "j:" + j);
                 int[] testPixel = outRaster.getPixel(i+x, j+y, (int[]) null);
                 if (testPixel[0] == TileUtils.oilColor.getRed() && testPixel[1] == TileUtils.oilColor.getGreen() && testPixel[2] == TileUtils.oilColor.getBlue()) {
-                    int maxOilDeapth = 10;
+
+                    int maxOilDeapth = 5;
                     if (deapth == maxOilDeapth) {
-                        addToWatching(i+x,j+y,10);
-                        return;
+                        //addToWatching(i+x,j+y,10);
+                        watching.add(new OilTask(i+x,j+y,10));
                     } else {
-                        int ominx = minx, omaxx = maxx, ominy = miny, omaxy = maxy;
-                        if (i > 0) {
-                            ominx = 1;
-                        } else if (i < 0) {
-                            omaxx = -1;
-                        }
-                        if (j > 0) {
-                            ominy = 1;
-                        } else if (j < 0) {
-                            omaxy = -1;
-                        }
-                        lightOilSub(i+x,j+y,outRaster, deapth+1,ominx,omaxx,ominy,omaxy);
+
+
+                        lightOil(x+i,y+j,outRaster, deapth+1);
                     }
 
                 }
@@ -93,13 +97,13 @@ public class Base extends Layer{
         }
     }
 
-    private void tickPixel(int x, int y, WritableRaster outRaster) {
+    public void tickPixel(int x, int y, WritableRaster outRaster) {
         int[] pixel = outRaster.getPixel(x, y, (int[]) null);
 
         if (pixel[0] == TileUtils.fireColor.getRed() && pixel[1] == TileUtils.fireColor.getGreen() && pixel[2] == TileUtils.fireColor.getBlue()) {
             int[] out = {0,0,0,0};
             outRaster.setPixel(x,y,out);
-            addNextToWatching(x,y,100);
+            //addNextToWatching(x,y,100);
 
 
 
@@ -115,7 +119,7 @@ public class Base extends Layer{
                     }
                     int[] testPixel = outRaster.getPixel(i+x, j+y, (int[]) null);
                     if (testPixel[0] == TileUtils.fireColor.getRed() && testPixel[1] == TileUtils.fireColor.getGreen() && testPixel[2] == TileUtils.fireColor.getBlue()) {
-                        lightOil(x+i,y+j,outRaster);
+                        lightOilInit(x+i,y+j,outRaster);
                         return;
                     }
                 }
@@ -140,16 +144,16 @@ public class Base extends Layer{
 
         WritableRaster outRaster = image.getRaster();
 
-        for (int i = 0; i<maxWatch; i++) {
+        for (int i = 0; i<maxWatchTick; ) {
 
-            queuedPoint point = watching.poll();
-            if (point == null) {
+            QueuedTask task = watching.poll();
+            if (task == null) {
                 break;
             }
-            int x = point.x;
-            int y = point.y;
 
-            tickPixel(x,y,outRaster);
+            if (task.run(this,outRaster)) {
+                i++;
+            }
 
         }
 
