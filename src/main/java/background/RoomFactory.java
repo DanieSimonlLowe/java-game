@@ -6,14 +6,11 @@ import items.Item;
 
 import javax.vecmath.Vector2d;
 import java.util.List;
-import java.util.Random;
 
 public class RoomFactory {
-    private static int borderSize = 20;
+    private static final int borderSize = 20;
 
     static public void createBasicRoom(Base base, Entity player, List<Entity> entities, List<Item> items) {
-        Random random = new Random();
-        //make border wall.
         base.clear();
 
         base.drawRect(Tile.wall,0,0,base.getWidth()-1,borderSize);
@@ -28,6 +25,6 @@ public class RoomFactory {
 
         entities.add(EntityFactory.makeChaser(new Vector2d(base.getWidth()-borderSize-50,borderSize+50),player));
         entities.add(EntityFactory.makeChaser(new Vector2d(borderSize+50,base.getHeight()-borderSize-50),player));
-        entities.add(EntityFactory.makeChaser(new Vector2d(base.getWidth()-borderSize-50,base.getHeight()-borderSize-50),player));
+        entities.add(EntityFactory.makeGhost(new Vector2d(base.getWidth()-borderSize-50,base.getHeight()-borderSize-50),player,base.getWidth(),base.getHeight()));
     }
 }

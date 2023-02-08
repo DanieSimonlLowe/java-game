@@ -16,12 +16,11 @@ import java.util.*;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 public class Base extends Layer {
+    public static Random random = new Random();
 
-    private final Random random;
     public Base(int width, int height) {
         super(width,height);
         watching = new PriorityQueue<>();
-        random = new Random();
     }
 
     static final int pixelsChecked = 100;
@@ -37,6 +36,7 @@ public class Base extends Layer {
     }
 
     private void addNextToWatching(int x, int y,int proirty) {
+
         addToWatching(x+1,y,proirty + random.nextInt(100));
         addToWatching(x-1,y,proirty + random.nextInt(100));
         addToWatching(x,y+1,proirty + random.nextInt(100));
@@ -175,6 +175,9 @@ public class Base extends Layer {
 
         for (int ix = 0; ix < width; ix++) {
             for (int iy = 0; iy < height; iy++) {
+                if (screenX+ix < 0 || screenX+ix >= getWidth() || screenY+iy < 0 || screenY+iy >= getHeight()) {
+                    continue;
+                }
                 int[] pixel1 = outRaster.getPixel(screenX+ix,screenY+iy,(int[]) null);
                 int[] wall = TileUtils.getIntArrayFromTile(Tile.wall);
                 if (pixel1[0] == wall[0] && pixel1[1] == wall[1] && pixel1[2] == wall[2]) {

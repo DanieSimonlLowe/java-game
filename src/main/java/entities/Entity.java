@@ -25,7 +25,7 @@ public class Entity {
 
     private int health;
 
-    boolean affectedByWall;
+    private boolean affectedByWall;
 
     public EntityController getController() {
         return controller;
@@ -107,7 +107,7 @@ public class Entity {
         return (int)position.y;
     }
 
-    private void setNotAffectedByWall() {
+    public void setNotAffectedByWall() {
         affectedByWall = false;
     }
 

@@ -6,5 +6,6 @@ public enum Tile {
     wall,
     fire,
     oil,
+    toxic,
     none
 }
