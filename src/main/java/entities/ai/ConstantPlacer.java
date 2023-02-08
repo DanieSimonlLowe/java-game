@@ -1,8 +1,8 @@
-package entitys.ai;
+package entities.ai;
 
 import background.Base;
 import background.Tile;
-import entitys.EntityPlacer;
+import entities.EntityPlacer;
 
 import javax.vecmath.Vector2d;
 import java.awt.*;

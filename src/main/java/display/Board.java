@@ -1,11 +1,11 @@
 package display;
 
 import background.Base;
-import background.Tile;
-import entitys.Entity;
-import entitys.EntityFactory;
-import entitys.player.PlayerController;
-import entitys.player.TAdapter;
+import background.RoomFactory;
+import entities.Entity;
+import entities.EntityFactory;
+import entities.player.PlayerController;
+import entities.player.TAdapter;
 import items.Item;
 
 import java.awt.*;
@@ -42,12 +42,12 @@ public class Board extends JPanel implements ActionListener {
         int width = (int)screenSize.getWidth();
         int height = (int)screenSize.getHeight();
 
-        baseLayer = new Base(width,height);
-        entityLayer = new Layer(width,height);
+        baseLayer = new Base(width-5,height-70);
+        entityLayer = new Layer(width-5,height-70);
 
         entities = new ArrayList<>();
 
-        player = EntityFactory.makePlayer(new Vector2d(0,0));
+        player = EntityFactory.makePlayer(new Vector2d(50,50));
         entities.add(player);
 
         items = new ArrayList<>();
@@ -63,9 +63,8 @@ public class Board extends JPanel implements ActionListener {
 
         oldTime = System.nanoTime();
 
+        RoomFactory.createBasicRoom(baseLayer,player,entities,items);
 
-        baseLayer.drawRect(Tile.wall, 100,100,100,100);
-        entities.add(EntityFactory.makeChaser(new Vector2d(400,400),player));
     }
 
 

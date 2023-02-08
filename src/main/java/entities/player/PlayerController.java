@@ -1,6 +1,6 @@
-package entitys.player;
+package entities.player;
 
-import entitys.EntityController;
+import entities.EntityController;
 
 import javax.vecmath.Tuple2d;
 import javax.vecmath.Vector2d;

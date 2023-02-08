@@ -1,4 +1,4 @@
-package entitys.player;
+package entities.player;
 
 import display.Drawable;
 

@@ -1,7 +1,7 @@
-package entitys.player;
+package entities.player;
 
 import background.Base;
-import entitys.EntityPlacer;
+import entities.EntityPlacer;
 
 import javax.vecmath.Vector2d;
 import java.awt.*;

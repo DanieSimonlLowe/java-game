@@ -1,14 +1,14 @@
-package entitys;
+package entities;
 
 import javax.swing.*;
 import javax.vecmath.Vector2d;
 import background.Tile;
-import entitys.ai.ChaseAi;
-import entitys.ai.ConstantPlacer;
-import entitys.player.Inventory;
-import entitys.player.PlayerController;
-import entitys.player.PlayerDrawable;
-import entitys.player.PlayerPlacer;
+import entities.ai.ChaseAi;
+import entities.ai.ConstantPlacer;
+import entities.player.Inventory;
+import entities.player.PlayerController;
+import entities.player.PlayerDrawable;
+import entities.player.PlayerPlacer;
 
 public class EntityFactory {
 

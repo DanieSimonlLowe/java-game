@@ -1,7 +1,7 @@
-package entitys.ai;
+package entities.ai;
 
-import entitys.Entity;
-import entitys.EntityController;
+import entities.Entity;
+import entities.EntityController;
 
 import javax.vecmath.Tuple2d;
 import javax.vecmath.Vector2d;

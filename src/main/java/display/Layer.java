@@ -1,6 +1,6 @@
 package display;
 
-import entitys.Entity;
+import entities.Entity;
 import items.Item;
 
 import java.awt.*;
@@ -37,7 +37,7 @@ public class Layer {
 
     }
 
-    void clear() {
+    public void clear() {
         g2d.setComposite(AlphaComposite.Clear);
         g2d.fillRect(0,0,width,height);
         g2d.setComposite(AlphaComposite.SrcOver);
@@ -60,6 +60,9 @@ public class Layer {
 
     public Color getColor(int x, int y) {
 
+        if (x < 0 || y < 0 || x >= getWidth() || y >= getHeight()) {
+            return new Color(0,0,0,0);
+        }
         int clr = image.getRGB(x,y);
         int red =   (clr & 0x00ff0000) >> 16;
         int green = (clr & 0x0000ff00) >> 8;

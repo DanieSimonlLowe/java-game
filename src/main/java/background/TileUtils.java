@@ -8,7 +8,7 @@ public class TileUtils {
     static final public Color wallColor = new Color(200,200,200);
     static final public Color fireColor = new Color(255,110,40);
     static final public Color oilColor = new Color(74,60,60);
-
+    static final public Color noneColor = new Color(0,0,0,0);
 
     static final public double gooMalt = 0.2;
     static final public double iceMalt = 2.5;
@@ -25,6 +25,8 @@ public class TileUtils {
                 return fireColor;
             case oil:
                 return oilColor;
+            case none:
+                return noneColor;
             default:
                 throw new RuntimeException("invalid tile color.");
         }

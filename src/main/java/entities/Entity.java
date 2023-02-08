@@ -1,4 +1,4 @@
-package entitys;
+package entities;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,6 +24,8 @@ public class Entity {
     private Tuple2d oldDir;
 
     private int health;
+
+    boolean affectedByWall;
 
     public EntityController getController() {
         return controller;
@@ -56,6 +58,7 @@ public class Entity {
         this.placer = placer;
         this.oldDir = new Vector2d(0,0);
         damageBuffer = 0;
+        affectedByWall = true;
     }
 
     private BufferedImage image;
@@ -102,6 +105,10 @@ public class Entity {
     }
     public int getPosY() {
         return (int)position.y;
+    }
+
+    private void setNotAffectedByWall() {
+        affectedByWall = false;
     }
 
     private int[][] getTestPoints() {
@@ -178,39 +185,40 @@ public class Entity {
         if ((oldDir.x != 0 || oldDir.y != 0) && onIce) {
             dir = oldDir;
         }
-        if (testTile[1] == Tile.wall) {
-            if (base.getTile(testPoints[1][0],testPoints[1][1]-1) == Tile.wall) {
-                dir.y = 1;
-                dir.x = 0;
-            } else if (dir.y < 0) {
-                dir.y = 0;
+        if (affectedByWall) {
+            if (testTile[1] == Tile.wall) {
+                if (base.getTile(testPoints[1][0], testPoints[1][1] + 1) == Tile.wall) {
+                    dir.y = 1;
+                    dir.x = 0;
+                } else if (dir.y < 0) {
+                    dir.y = 0;
+                }
+            }
+            if (testTile[2] == Tile.wall) { // left
+                if (base.getTile(testPoints[2][0] + 1, testPoints[2][1]) == Tile.wall) {
+                    dir.y = 0;
+                    dir.x = 1;
+                } else if (dir.x < 0) {
+                    dir.x = 0;
+                }
+            }
+            if (testTile[3] == Tile.wall) { // bottom
+                if (base.getTile(testPoints[3][0], testPoints[3][1] - 1) == Tile.wall) {
+                    dir.y = -1;
+                    dir.x = 0;
+                } else if (dir.y > 0) {
+                    dir.y = 0;
+                }
+            }
+            if (testTile[4] == Tile.wall) { // right
+                if (base.getTile(testPoints[4][0] - 1, testPoints[4][1]) == Tile.wall) {
+                    dir.y = 0;
+                    dir.x = -1;
+                } else if (dir.x > 0) {
+                    dir.x = 0;
+                }
             }
         }
-        if (testTile[2] == Tile.wall) { // left
-            if (base.getTile(testPoints[2][0]-1,testPoints[2][1]) == Tile.wall) {
-                dir.y = 0;
-                dir.x = 1;
-            } else if (dir.x < 0) {
-                dir.x = 0;
-            }
-        }
-        if (testTile[3] == Tile.wall) { // bottom
-            if (base.getTile(testPoints[3][0],testPoints[3][1]+1) == Tile.wall) {
-                dir.y = -1;
-                dir.x = 0;
-            } else if (dir.y > 0) {
-                dir.y = 0;
-            }
-        }
-        if (testTile[4] == Tile.wall) { // right
-            if (base.getTile(testPoints[4][0]+1,testPoints[4][1]) == Tile.wall) {
-                dir.y = 0;
-                dir.x = -1;
-            } else if (dir.x > 0) {
-                dir.x = 0;
-            }
-        }
-
 
         if (dir.x != 0 || dir.y != 0) {
             double malt = speed*deltaTime;
