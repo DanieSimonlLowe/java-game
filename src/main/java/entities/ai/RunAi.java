@@ -20,7 +20,7 @@ public class RunAi implements EntityController {
 
     @Override
     public Tuple2d getDirection(Vector2d position) {
-        Vector2d dir = (Vector2d) from.getPosition().clone();
+        Vector2d dir = from.getCenter();
         dir.scaleAdd(-1, position);
 
         if (dir.lengthSquared() <= runDistSquare) {

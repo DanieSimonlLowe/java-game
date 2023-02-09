@@ -265,6 +265,17 @@ public class Entity {
         return health <= 0;
     }
 
+    public double getCenterX() {
+        return position.x + drawable.getWidth()/2.0;
+    }
+
+    public double getCenterY() {
+        return position.y + drawable.getHeight()/2.0;
+    }
+
+    public Vector2d getCenter() {
+        return new Vector2d(getCenterX(),getCenterY());
+    }
 
     public void place(Base base, double deltaTime) {
         Vector2d vector = new Vector2d(getPosX()+extraSize,getPosY()+extraSize);

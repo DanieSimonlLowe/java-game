@@ -1,6 +1,7 @@
 package items;
 
 import background.Tile;
+import entities.Entity;
 
 import javax.swing.*;
 import javax.vecmath.Vector2d;
@@ -29,11 +30,11 @@ public class Item {
         image = makeImage();
     }
 
-    static private final double pickUpDistSquare = 600;
+    static private final double pickUpDistSquare = 800;
 
-    public boolean shouldPickUp(Vector2d playerPos) {
-        double distX = playerPos.getX() - position.getX() - image.getWidth(null)/2.0;
-        double distY = playerPos.getX() - position.getX() - image.getHeight(null)/2.0;
+    public boolean shouldPickUp(Entity player) {
+        double distX = player.getCenterX() - position.getX() - image.getWidth(null)/2.0;
+        double distY = player.getCenterY() - position.getY() - image.getHeight(null)/2.0;
         double distSquare = distX*distX + distY*distY;
         return distSquare <= (pickUpDistSquare);
     }

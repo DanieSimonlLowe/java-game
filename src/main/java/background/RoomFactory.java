@@ -115,7 +115,7 @@ public class RoomFactory {
                 items.add(new Item(amount,Tile.goo,new Vector2d(x,y)));
             } else {
                 double amount = Base.random.nextDouble()*6+2;
-                items.add(new Item(amount,Tile.goo,new Vector2d(x,y)));
+                items.add(new Item(amount,Tile.ice,new Vector2d(x,y)));
             }
         }
 

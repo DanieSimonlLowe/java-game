@@ -107,7 +107,7 @@ public class Board extends JPanel implements ActionListener {
         }
         entities.removeAll(toBeRemoved0);
 
-        ((PlayerController)player.getController()).getInventory().collect(items,player.getPosition());
+        ((PlayerController)player.getController()).getInventory().collect(items,player);
 
 
         ArrayList<Item> toBeRemoved = new ArrayList<>();

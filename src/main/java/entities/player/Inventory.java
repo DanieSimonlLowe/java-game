@@ -2,9 +2,9 @@ package entities.player;
 
 import background.Tile;
 import background.TileUtils;
+import entities.Entity;
 import items.Item;
 
-import javax.vecmath.Vector2d;
 import java.awt.*;
 import java.util.List;
 import java.awt.image.BufferedImage;
@@ -169,12 +169,12 @@ public class Inventory {
         item.destroy();
     }
 
-    public void collect(List<Item> items, Vector2d position) {
+    public void collect(List<Item> items, Entity player) {
         if (spaceUsed >= maxSpace) {
             return;
         }
         for (Item item: items) {
-            if (item.shouldPickUp(position)) {
+            if (item.shouldPickUp(player)) {
                 addItem(item);
             }
         }

@@ -17,7 +17,7 @@ public class ChaseAi implements EntityController {
     @Override
     public Tuple2d getDirection(Vector2d position) {
         Vector2d dir = (Vector2d)position.clone();
-        dir.scaleAdd(-1,chasing.getPosition());
+        dir.scaleAdd(-1,chasing.getCenter());
         dir.normalize();
         return dir;
     }
