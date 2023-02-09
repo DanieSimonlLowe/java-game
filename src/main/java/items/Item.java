@@ -30,7 +30,7 @@ public class Item {
         image = makeImage();
     }
 
-    static private final double pickUpDistSquare = 800;
+    static private final double pickUpDistSquare = 2000;
 
     public boolean shouldPickUp(Entity player) {
         double distX = player.getCenterX() - position.getX() - image.getWidth(null)/2.0;

@@ -13,6 +13,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 public class Entity {
     private Tile[] weaknesses;
+    private boolean onEixt = true;
 
     private static final int testPointCount = 5;
     private double speed;
@@ -26,6 +27,10 @@ public class Entity {
     private int health;
 
     private boolean affectedByWall;
+
+    public void resetOnExit() {
+        onEixt = false;
+    }
 
     public EntityController getController() {
         return controller;
@@ -59,6 +64,7 @@ public class Entity {
         this.oldDir = new Vector2d(0,0);
         damageBuffer = 0;
         affectedByWall = true;
+        onEixt = false;
     }
 
     private BufferedImage image;
@@ -131,6 +137,10 @@ public class Entity {
         return points;
     }
 
+    public boolean getIsExit() {
+        return onEixt;
+    }
+
     private boolean isWeakness(Tile test) {
         for (Tile tile: weaknesses) {
             if (test == tile) {
@@ -140,7 +150,7 @@ public class Entity {
         return false;
     }
 
-    private static final double damageBufferAmount = 0.75;
+    private static final double damageBufferAmount = 1.5;
     private double damageBuffer;
 
     private void takeDamage(int amount) {
@@ -170,11 +180,13 @@ public class Entity {
                 onGoo = true;
             } else if (testTile[i] == Tile.ice) {
                 onIce = true;
+            } else if (testTile[i] == Tile.exit) {
+                onEixt = true;
             }
         }
 
         if (isWeakness(testTile[0])) {
-            takeDamage(2);
+            takeDamage(1);
         } else if (isWeakness(testTile[1])) {
             takeDamage(1);
         } else if (isWeakness(testTile[2])) {

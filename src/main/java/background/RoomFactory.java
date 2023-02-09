@@ -11,7 +11,8 @@ public class RoomFactory {
     private static final int borderSize = 20;
     private static final int extraBorderSize = 30;
 
-    static public void createBasicRoom(Base base, Entity player, List<Entity> entities, List<Item> items) {
+    static public RoomEnd createBasicRoom(Base base, Entity player, List<Entity> entities, List<Item> items) {
+        player.resetOnExit();
         base.clear();
 
         base.drawRect(Tile.wall,0,0,base.getWidth()-1,borderSize);
@@ -25,9 +26,11 @@ public class RoomFactory {
         player.getPosition().set(borderSize+10,borderSize+10);
 
         final int wallWidth = 40;
+        final int holeWidthMin = 55;
+        final int holeWidthVar = 60;
         int filledWall = Base.random.nextInt(5);
         if (Base.random.nextBoolean()) {
-            int holeWidth = 55 + Base.random.nextInt(30);
+            int holeWidth = holeWidthMin + Base.random.nextInt(holeWidthVar);
             base.drawRect(Tile.wall,(base.getWidth())/2-wallWidth/2,(base.getHeight())/2,wallWidth,(base.getHeight())/2);
             if (filledWall != 0) {
                 int pos = Base.random.nextInt(base.getHeight()/2-borderSize-holeWidth-pilerWidth) + pilerWidth + (base.getHeight()/2);
@@ -36,7 +39,7 @@ public class RoomFactory {
 
         }
         if (Base.random.nextBoolean()) {
-            int holeWidth = 55 + Base.random.nextInt(30);
+            int holeWidth = holeWidthMin + Base.random.nextInt(holeWidthVar);
             base.drawRect(Tile.wall,(base.getWidth())/2-wallWidth/2,0,wallWidth,(base.getHeight())/2);
             if (filledWall != 1) {
                 int pos = Base.random.nextInt(base.getHeight() / 2 - holeWidth - pilerWidth) + borderSize;
@@ -44,7 +47,7 @@ public class RoomFactory {
             }
         }
         if (Base.random.nextBoolean()) {
-            int holeWidth = 55 + Base.random.nextInt(30);
+            int holeWidth = holeWidthMin + Base.random.nextInt(holeWidthVar);
             base.drawRect(Tile.wall,(base.getWidth())/2,(base.getHeight()-wallWidth)/2,(base.getWidth())/2,wallWidth);
             if (filledWall != 2) {
                 int pos = Base.random.nextInt(base.getWidth() / 2 -borderSize-holeWidth-pilerWidth) + pilerWidth + (base.getWidth()/2);
@@ -52,7 +55,7 @@ public class RoomFactory {
             }
         }
         if (Base.random.nextBoolean()) {
-            int holeWidth = 50 + Base.random.nextInt(30);
+            int holeWidth = 55 + Base.random.nextInt(holeWidthVar);
             base.drawRect(Tile.wall,0,(base.getHeight()-wallWidth)/2,(base.getWidth())/2,wallWidth);
             if (filledWall != 3) {
                 int pos = Base.random.nextInt(base.getWidth() / 2 - pilerWidth - holeWidth) + borderSize;
@@ -61,45 +64,43 @@ public class RoomFactory {
         }
 
 
-        int enemyType = 0; //Base.random.nextInt(2);
-        final int spawnArea = 300;
-        if (enemyType == 0) {
-            int side = Base.random.nextInt(3);
-            int count =  Base.random.nextInt(10) + 1;
-            for (int i = 0; i < count; i++) {
-                int x = base.getWidth() - borderSize -extraBorderSize - Base.random.nextInt(spawnArea);
-                int y = Base.random.nextInt(spawnArea) + borderSize + extraBorderSize;
-                if (side == 0) {
-                    entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
-                } else {
-                    entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
-                }
-
-            }
-            count =  Base.random.nextInt(10) + 1;
-            for (int i = 0; i < count; i++) {
-                int x = Base.random.nextInt(spawnArea) + borderSize+ extraBorderSize;
-                int y =  base.getHeight()-borderSize- extraBorderSize - Base.random.nextInt(spawnArea);
-                if (side == 1) {
-                    entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
-                } else {
-                    entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
-                }
+        final int spawnArea = 280;
+        int side = Base.random.nextInt(3);
+        int count =  Base.random.nextInt(10) + 1;
+        for (int i = 0; i < count; i++) {
+            int x = base.getWidth() - borderSize -extraBorderSize - Base.random.nextInt(spawnArea);
+            int y = Base.random.nextInt(spawnArea) + borderSize + extraBorderSize;
+            if (side == 0) {
+                entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
+            } else {
+                entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
             }
 
-            count =  Base.random.nextInt(10) + 1;
-            for (int i = 0; i < count; i++) {
-                int x = base.getWidth()  - borderSize - extraBorderSize - Base.random.nextInt(spawnArea);
-                int y =  base.getHeight()- borderSize - extraBorderSize - Base.random.nextInt(spawnArea);
-                if (side == 2) {
-                    entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
-                } else {
-                    entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
-                }
+        }
+        count =  Base.random.nextInt(10) + 1;
+        for (int i = 0; i < count; i++) {
+            int x = Base.random.nextInt(spawnArea) + borderSize+ extraBorderSize;
+            int y =  base.getHeight()-borderSize- extraBorderSize - Base.random.nextInt(spawnArea);
+            if (side == 1) {
+                entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
+            } else {
+                entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
             }
         }
 
-        int count = 1 + Base.random.nextInt(2);
+        count =  Base.random.nextInt(10) + 1;
+        for (int i = 0; i < count; i++) {
+            int x = base.getWidth()  - borderSize - extraBorderSize - Base.random.nextInt(spawnArea);
+            int y =  base.getHeight()- borderSize - extraBorderSize - Base.random.nextInt(spawnArea);
+            if (side == 2) {
+                entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
+            } else {
+                entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
+            }
+        }
+
+
+        count = 2 + Base.random.nextInt(3);
         for (int i = 0; i < count; i++) {
             int x, y;
             do {
@@ -119,5 +120,10 @@ public class RoomFactory {
             }
         }
 
+        return () -> {
+            if (entities.size() <= 1) {
+                base.drawRect(Tile.exit,(base.getWidth()-pilerWidth)/2,(base.getHeight()-pilerWidth)/2,pilerWidth,pilerWidth);
+            }
+        };
     }
 }

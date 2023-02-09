@@ -9,6 +9,8 @@ public class TileUtils {
     static final public Color fireColor = new Color(255,110,40);
     static final public Color oilColor = new Color(74,60,60);
     static final public Color toxicColor = new Color(255,50,225);
+
+    static final public Color exitColor = new Color(255,170,50);
     static final public Color noneColor = new Color(0,0,0,0);
 
     static final public double gooMalt = 0.2;
@@ -30,6 +32,8 @@ public class TileUtils {
                 return noneColor;
             case toxic:
                 return toxicColor;
+            case exit:
+                return exitColor;
             default:
                 throw new RuntimeException("invalid tile color.");
         }
@@ -48,6 +52,8 @@ public class TileUtils {
             return Tile.oil;
         } else if (toxicColor.equals(color)) {
             return Tile.toxic;
+        } else if (exitColor.equals(color)){
+            return Tile.exit;
         } else {
             return Tile.none;
         }

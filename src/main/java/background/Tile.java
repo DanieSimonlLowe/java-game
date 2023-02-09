@@ -7,5 +7,6 @@ public enum Tile {
     fire,
     oil,
     toxic,
+    exit,
     none
 }
