@@ -150,6 +150,8 @@ public class Entity {
         }
     }
 
+    private final static double iceChangeRate = 0.2;
+
     public void move(double deltaTime, Base base) {
         if (controller == null) {
             return;
@@ -183,7 +185,8 @@ public class Entity {
             takeDamage(1);
         }
         if ((oldDir.x != 0 || oldDir.y != 0) && onIce) {
-            dir = oldDir;
+            dir.scale(deltaTime*iceChangeRate);
+            dir.scaleAdd(1-deltaTime*iceChangeRate,oldDir);
         }
         if (affectedByWall) {
             if (testTile[1] == Tile.wall) {

@@ -23,8 +23,8 @@ public class Base extends Layer {
         watching = new PriorityQueue<>();
     }
 
-    static final int pixelsChecked = 100;
-    static final int maxWatchTick = 100;
+    static final int pixelsChecked = 300;
+    static final int maxWatchTick = 300;
     public PriorityQueue<QueuedTask> watching;
 
 
@@ -35,12 +35,12 @@ public class Base extends Layer {
         watching.add(new PixelTask(x,y,proirty));
     }
 
-    private void addNextToWatching(int x, int y,int proirty) {
+    private void addNextToWatching(int x, int y,int proirty, int changePos) {
 
-        addToWatching(x+1,y,proirty + random.nextInt(100));
-        addToWatching(x-1,y,proirty + random.nextInt(100));
-        addToWatching(x,y+1,proirty + random.nextInt(100));
-        addToWatching(x,y-1,proirty + random.nextInt(100));
+        addToWatching(x+changePos,y,proirty + random.nextInt(100));
+        addToWatching(x-changePos,y,proirty + random.nextInt(100));
+        addToWatching(x,y+changePos,proirty + random.nextInt(100));
+        addToWatching(x,y-changePos,proirty + random.nextInt(100));
 
     }
 
@@ -87,9 +87,26 @@ public class Base extends Layer {
         }
     }
 
+    private static int fireOutRange = 2;
+
     private void fireTick(int x, int y, WritableRaster outRaster) {
         int[] out = {0,0,0,0};
         outRaster.setPixel(x,y,out);
+        for (int i = -fireOutRange; i <= fireOutRange; i++) {
+            if (x+i < 0 || x+i >= getWidth()) {
+                continue;
+            }
+            for (int j = -fireOutRange; j <= fireOutRange; j++) {
+                if ( (i == 0 && j == 0) || y+j < 0 || y+j >= getHeight()) {
+                    continue;
+                }
+
+                int[] pixel = outRaster.getPixel(x+i,y+j,(int[]) null);
+                if (pixel[0] == TileUtils.fireColor.getRed() && pixel[1] == TileUtils.fireColor.getGreen() && pixel[2] == TileUtils.fireColor.getBlue()) {
+                    outRaster.setPixel(x+i,y+j,out);
+                }
+            }
+        }
     }
 
     public void oilTick(int x, int y, WritableRaster outRaster) {
@@ -117,7 +134,7 @@ public class Base extends Layer {
 
         if (pixel[0] == TileUtils.fireColor.getRed() && pixel[1] == TileUtils.fireColor.getGreen() && pixel[2] == TileUtils.fireColor.getBlue()) {
             fireTick(x,y,outRaster);
-            addNextToWatching(x,y,900);
+            addNextToWatching(x,y,900,fireOutRange*2-1);
         } else if (pixel[0] == TileUtils.oilColor.getRed() && pixel[1] == TileUtils.oilColor.getGreen() && pixel[2] == TileUtils.oilColor.getBlue()) {
             oilTick(x,y,outRaster);
             watching.add(new FindOilTask(x,y+oilLightSize*2,800, FindOilTask.Direction.up));
@@ -193,8 +210,14 @@ public class Base extends Layer {
     }
 
     public void drawRect(background.Tile tile, int x, int y, int width, int height) {
-        super.g2d.setColor(TileUtils.getTileColor(tile));
-        super.g2d.fillRect(x,y,width,height);
+        if (tile == Tile.none) {
+            super.g2d.setComposite(AlphaComposite.Clear);
+            super.g2d.fillRect(x,y,width,height);
+            super.g2d.setComposite(AlphaComposite.SrcOver);
+        } else {
+            super.g2d.setColor(TileUtils.getTileColor(tile));
+            super.g2d.fillRect(x,y,width,height);
+        }
     }
 
     public Tile getTile(int x, int y) {

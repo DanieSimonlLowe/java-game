@@ -36,6 +36,7 @@ public class Inventory {
         tileSpace = new double[tilePos.length];
         spaceUsed = 0;
         inUse = false;
+        setChanged();
     }
 
     public void addTile(Tile tile, double amount) {
@@ -45,6 +46,9 @@ public class Inventory {
         } else {
             tileSpace[getTilePos(tile)] += amount;
             spaceUsed += amount;
+        }
+        if (tileSpace[selected] <= 0) {
+            selected = getTilePos(tile);
         }
         setChanged();
     }
@@ -112,6 +116,10 @@ public class Inventory {
 
     static private final int circleRectNum = 20;
     protected void drawTo(BufferedImage image) {
+        if (spaceUsed == 0) {
+            return;
+        }
+
         int width = image.getWidth();
         int height = image.getHeight();
         Graphics2D g2d = (Graphics2D)image.getGraphics();
