@@ -70,7 +70,7 @@ public class RoomFactory {
                 int x = base.getWidth() - borderSize -extraBorderSize - Base.random.nextInt(spawnArea);
                 int y = Base.random.nextInt(spawnArea) + borderSize + extraBorderSize;
                 if (side == 0) {
-                    entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player,base.getWidth(),base.getHeight()));
+                    entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
                 } else {
                     entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
                 }
@@ -81,7 +81,7 @@ public class RoomFactory {
                 int x = Base.random.nextInt(spawnArea) + borderSize+ extraBorderSize;
                 int y =  base.getHeight()-borderSize- extraBorderSize - Base.random.nextInt(spawnArea);
                 if (side == 1) {
-                    entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player,base.getWidth(),base.getHeight()));
+                    entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
                 } else {
                     entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
                 }
@@ -92,7 +92,7 @@ public class RoomFactory {
                 int x = base.getWidth()  - borderSize - extraBorderSize - Base.random.nextInt(spawnArea);
                 int y =  base.getHeight()- borderSize - extraBorderSize - Base.random.nextInt(spawnArea);
                 if (side == 2) {
-                    entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player,base.getWidth(),base.getHeight()));
+                    entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
                 } else {
                     entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
                 }
