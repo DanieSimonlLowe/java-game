@@ -29,13 +29,13 @@ public class Item {
         image = makeImage();
     }
 
-    static private final double pickUpDist = 20;
+    static private final double pickUpDistSquare = 600;
 
     public boolean shouldPickUp(Vector2d playerPos) {
         double distX = playerPos.getX() - position.getX() - image.getWidth(null)/2.0;
         double distY = playerPos.getX() - position.getX() - image.getHeight(null)/2.0;
         double distSquare = distX*distX + distY*distY;
-        return distSquare <= (pickUpDist*pickUpDist);
+        return distSquare <= (pickUpDistSquare);
     }
 
     private Image makeImage() {
