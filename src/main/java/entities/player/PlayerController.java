@@ -20,9 +20,7 @@ public class PlayerController implements EntityController {
         directions = new boolean[]{false, false, false, false};
     }
     @Override
-    public Tuple2d getDirection(Vector2d position) {
-
-
+    public Tuple2d getDirection(Vector2d position, double deltaTime) {
 
         Vector2d dir = new Vector2d(0,0);
         if (directions[0] && !directions[1]) {

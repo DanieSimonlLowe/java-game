@@ -19,7 +19,7 @@ public class RunAi implements EntityController {
     }
 
     @Override
-    public Tuple2d getDirection(Vector2d position) {
+    public Tuple2d getDirection(Vector2d position, double deltaTime) {
         Vector2d dir = from.getCenter();
         dir.scaleAdd(-1, position);
 
@@ -27,7 +27,7 @@ public class RunAi implements EntityController {
             dir.normalize();
             return dir;
         } else {
-            return outOfRange.getDirection(position);
+            return outOfRange.getDirection(position, deltaTime);
         }
 
     }

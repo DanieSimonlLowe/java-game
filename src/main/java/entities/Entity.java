@@ -156,7 +156,7 @@ public class Entity {
         if (controller == null) {
             return;
         }
-        Tuple2d dir = controller.getDirection(position);
+        Tuple2d dir = controller.getDirection(position,deltaTime);
 
         //center top left bottom right
         int[][] testPoints = getTestPoints();

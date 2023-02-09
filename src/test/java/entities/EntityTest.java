@@ -130,7 +130,7 @@ class testController implements EntityController {
         this.dir = dir;
     }
     @Override
-    public Tuple2d getDirection(Vector2d position) {
+    public Tuple2d getDirection(Vector2d position, double deltaTime) {
         return dir;
     }
 }

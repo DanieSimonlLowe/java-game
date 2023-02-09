@@ -6,6 +6,7 @@ import javax.vecmath.Vector2d;
 import background.Tile;
 import entities.ai.ChaseAi;
 import entities.ai.ConstantPlacer;
+import entities.ai.WonderAi;
 import entities.player.Inventory;
 import entities.player.PlayerController;
 import entities.player.PlayerDrawable;
@@ -23,13 +24,13 @@ public class EntityFactory {
     static public Entity makeChaser(Vector2d position, Entity player) {
         ImageIcon icon = new ImageIcon("src/main/resources/Images/entitys/chaser.png");
         Tile[] weaknesses = {Tile.toxic};
-        return new Entity(weaknesses,1,50,position,new ChaseAi(player),new ConstantPlacer(Tile.fire),new SimpleDrawable(icon.getImage()));
+        return new Entity(weaknesses,1,50,position,new ChaseAi(player,45,new WonderAi(200),8),new ConstantPlacer(Tile.fire),new SimpleDrawable(icon.getImage()));
     }
 
-    static public Entity makeGhost(Vector2d position, Entity player, double width, double height) {
+    static public Entity makeGhost(Vector2d position, Entity player) {
         ImageIcon icon = new ImageIcon("src/main/resources/Images/entitys/ghost.png");
         Tile[] weaknesses = {Tile.fire};
-        Entity entity = new Entity(weaknesses,1,50,position, new ChaseAi(player),new ConstantPlacer(Tile.toxic),new SimpleDrawable(icon.getImage()));
+        Entity entity = new Entity(weaknesses,1,50,position, new ChaseAi(player,45,new WonderAi(400),8),new ConstantPlacer(Tile.toxic),new SimpleDrawable(icon.getImage()));
         entity.setNotAffectedByWall();
         return entity;
     }
