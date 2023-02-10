@@ -5,20 +5,45 @@ import entities.EntityFactory;
 import items.Item;
 
 import javax.vecmath.Vector2d;
-import java.util.List;
+import java.util.*;
 
 public class RoomFactory {
     private static final int borderSize = 20;
     private static final int extraBorderSize = 30;
 
-    static public RoomEnd createBasicRoom(Base base, Entity player, List<Entity> entities, List<Item> items) {
-        player.resetOnExit();
-        base.clear();
-
+    static private void drawBorder(Base base) {
         base.drawRect(Tile.wall,0,0,base.getWidth()-1,borderSize);
         base.drawRect(Tile.wall,0,base.getHeight()-borderSize-1,base.getWidth()-1,borderSize);
         base.drawRect(Tile.wall,0,0,borderSize,base.getHeight()-1);
         base.drawRect(Tile.wall,base.getWidth()-borderSize-1,0,borderSize,base.getHeight()-1);
+    }
+
+    static private void addItems(List<Item> items, Base base, int count) {
+        for (int i = 0; i < count; i++) {
+            int x, y;
+            do {
+                x = borderSize + extraBorderSize + Base.random.nextInt(base.getWidth() - 2 * (borderSize + extraBorderSize));
+                y = borderSize + extraBorderSize + Base.random.nextInt(base.getHeight() - 2 * (borderSize + extraBorderSize));
+            } while (base.getTile(x,y) != Tile.none || base.getTile(x+extraBorderSize,x+extraBorderSize) != Tile.none);
+            int type = Base.random.nextInt(3);
+            if (type == 0) {
+                double amount = Base.random.nextDouble()*10+5;
+                items.add(new Item(amount,Tile.oil,new Vector2d(x,y)));
+            } else if (type == 1) {
+                double amount = Base.random.nextDouble()*8+4;
+                items.add(new Item(amount,Tile.goo,new Vector2d(x,y)));
+            } else {
+                double amount = Base.random.nextDouble()*6+2;
+                items.add(new Item(amount,Tile.ice,new Vector2d(x,y)));
+            }
+        }
+    }
+
+    static public RoomTick createPillarRoom(Base base, Entity player, List<Entity> entities, List<Item> items) {
+        player.resetOnExit();
+        base.clear();
+
+        drawBorder(base);
 
         final int pilerWidth = 200;
         base.drawRect(Tile.wall,(base.getWidth()-pilerWidth)/2,(base.getHeight()-pilerWidth)/2,pilerWidth,pilerWidth);
@@ -101,29 +126,153 @@ public class RoomFactory {
 
 
         count = 2 + Base.random.nextInt(3);
-        for (int i = 0; i < count; i++) {
-            int x, y;
-            do {
-                x = borderSize + extraBorderSize + Base.random.nextInt(base.getWidth() - 2 * (borderSize + extraBorderSize));
-                y = borderSize + extraBorderSize + Base.random.nextInt(base.getHeight() - 2 * (borderSize + extraBorderSize));
-            } while (base.getTile(x,y) != Tile.none || base.getTile(x+extraBorderSize,x+extraBorderSize) != Tile.none);
-            int type = Base.random.nextInt(3);
-            if (type == 0) {
-                double amount = Base.random.nextDouble()*10+5;
-                items.add(new Item(amount,Tile.oil,new Vector2d(x,y)));
-            } else if (type == 1) {
-                double amount = Base.random.nextDouble()*8+4;
-                items.add(new Item(amount,Tile.goo,new Vector2d(x,y)));
-            } else {
-                double amount = Base.random.nextDouble()*6+2;
-                items.add(new Item(amount,Tile.ice,new Vector2d(x,y)));
-            }
-        }
+        addItems(items,base,count);
 
         return () -> {
             if (entities.size() <= 1) {
                 base.drawRect(Tile.exit,(base.getWidth()-pilerWidth)/2,(base.getHeight()-pilerWidth)/2,pilerWidth,pilerWidth);
             }
         };
+    }
+
+
+    private static boolean mazeHasNabors(boolean[][] grid,int blockCountW, int blockCountH, int x, int y) {
+        if (x > 1) {
+            if (!grid[x-1][y]) {
+                return true;
+            }
+        }
+        if (x+1 < blockCountW) {
+            if (!grid[x+1][y]) {
+                return true;
+            }
+        }
+        if (y > 1) {
+            if (!grid[x][y-1]) {
+                return true;
+            }
+        }
+        if (y+1 < blockCountH) {
+            if (!grid[x][y+1]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static public RoomTick createMazeRoom(Base base, Entity player, List<Entity> entities, List<Item> items) {
+        player.resetOnExit();
+
+        player.getPosition().set(borderSize+10,borderSize+10);
+
+        base.drawRect(Tile.wall,0,0,base.getWidth(),base.getHeight());
+
+
+        final int sectionSize = 70;
+        final int wallSize = 30;
+        final int sumSize = wallSize + sectionSize;
+        final int blockCountH = (base.getHeight()-2*borderSize)/sumSize;
+        final int blockCountW = (base.getWidth()-2*borderSize)/sumSize;
+
+        boolean grid[][] = new boolean[blockCountW][blockCountH];
+        for (int i = 0; i<blockCountW; i++) {
+            for (int j = 0; j<blockCountH; j++) {
+                grid[i][j] = false;
+            }
+        }
+
+        int x = Base.random.nextInt(blockCountW-1)+1;
+        int y = Base.random.nextInt(blockCountH-1)+1;
+        int num = 0;
+        grid[x][y] = true;
+        while (true) {
+            num++;
+            base.drawRect(Tile.none, sumSize*x+borderSize, sumSize*y+borderSize, sectionSize, sectionSize);
+            while (mazeHasNabors(grid,blockCountW,blockCountH,x,y)) {
+                int dir, oldX = x, oldY = y;
+                do {
+                    dir = Base.random.nextInt(4);
+                    if (dir == 0) {
+                        x = oldX + 1;
+                        y = oldY;
+                    } else if (dir == 1) {
+                        x = oldX;
+                        y = oldY + 1;
+                    } else if (dir == 2) {
+                        x = oldX - 1;
+                        y = oldY;
+                    } else {
+                        x = oldX;
+                        y = oldY - 1;
+                    }
+                } while (( x >= blockCountW)
+                        || ( y >= blockCountH)
+                        || ( x < 0)
+                        || ( y < 0));
+                if (grid[x][y]) {
+                    x = oldX;
+                    y = oldY;
+                    continue;
+                }
+                if (dir == 0) {
+                    base.drawRect(Tile.none, sumSize * oldX + borderSize, sumSize * oldY + borderSize, sumSize, sectionSize);
+                } else if (dir == 1) {
+                    base.drawRect(Tile.none, sumSize * oldX + borderSize, sumSize * oldY + borderSize, sectionSize, sumSize);
+                } else if (dir == 2) {
+                    base.drawRect(Tile.none, sumSize * x + borderSize, sumSize * oldY + borderSize, sumSize, sectionSize);
+                } else {
+                    base.drawRect(Tile.none, sumSize * oldX + borderSize, sumSize * y + borderSize, sectionSize, sumSize);
+                }
+                base.drawRect(Tile.none, sumSize*x+borderSize, sumSize*y+borderSize, sectionSize, sectionSize);
+                grid[x][y] = true;
+            }
+
+
+            boolean noEmpty = true;
+            for (int i = 0; i<blockCountW; i++) {
+                for (int j = 0; j<blockCountH; j++) {
+                    if (!grid[i][j]) {
+                        noEmpty = false;
+                        break;
+                    }
+                }
+                if (!noEmpty) {
+                    break;
+                }
+            }
+            if (noEmpty || num > 500) {
+                break;
+            }
+
+            do {
+                x = Base.random.nextInt(blockCountW);
+                y = Base.random.nextInt(blockCountH);
+            } while (!grid[x][y]);
+
+        }
+
+        for (int i = 0; i < blockCountW; i++) {
+            for (int j = 0; j < blockCountH; j++) {
+                if (!grid[i][j]) {
+                    base.drawRect(Tile.none, sumSize * i + borderSize, sumSize * j + borderSize, sumSize, sumSize);
+                }
+            }
+        }
+        int count = Base.random.nextInt(2)+1;
+        for (int i = 0; i < count; i++) {
+            x = Base.random.nextInt(blockCountW-1)+1;
+            y = Base.random.nextInt(blockCountH-1)+1;
+            base.drawRect(Tile.none, sumSize * x + borderSize - wallSize, sumSize * y + borderSize - wallSize, sumSize+wallSize, sumSize+wallSize);
+        }
+
+        base.drawRect(Tile.exit, sumSize * (blockCountW-1) + borderSize, sumSize * (blockCountH-1) + borderSize , sumSize, sumSize);
+
+        entities.add(EntityFactory.makeFire(new Vector2d(borderSize,base.getHeight() - borderSize),player));
+        entities.add(EntityFactory.makeFire(new Vector2d(base.getWidth() - borderSize, borderSize),player));
+
+        count = 2 + Base.random.nextInt(3);
+        addItems(items,base,count);
+
+        return () -> {};
     }
 }

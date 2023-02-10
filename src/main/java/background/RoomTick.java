@@ -1,5 +1,5 @@
 package background;
 
-public interface RoomEnd {
+public interface RoomTick {
     void runEndedIfEnded();
 }

@@ -162,6 +162,8 @@ public class Entity {
 
     private final static double iceChangeRate = 0.2;
 
+    private final int minDiffWallMove = 3;
+
     public void move(double deltaTime, Base base) {
         if (controller == null) {
             return;
@@ -202,7 +204,7 @@ public class Entity {
         }
         if (affectedByWall) {
             if (testTile[1] == Tile.wall) {
-                if (base.getTile(testPoints[1][0], testPoints[1][1] + 1) == Tile.wall) {
+                if (base.getTile(testPoints[1][0], testPoints[1][1] + minDiffWallMove) == Tile.wall) {
                     dir.y = 1;
                     dir.x = 0;
                 } else if (dir.y < 0) {
@@ -210,7 +212,7 @@ public class Entity {
                 }
             }
             if (testTile[2] == Tile.wall) { // left
-                if (base.getTile(testPoints[2][0] + 1, testPoints[2][1]) == Tile.wall) {
+                if (base.getTile(testPoints[2][0] + minDiffWallMove, testPoints[2][1]) == Tile.wall) {
                     dir.y = 0;
                     dir.x = 1;
                 } else if (dir.x < 0) {
@@ -218,7 +220,7 @@ public class Entity {
                 }
             }
             if (testTile[3] == Tile.wall) { // bottom
-                if (base.getTile(testPoints[3][0], testPoints[3][1] - 1) == Tile.wall) {
+                if (base.getTile(testPoints[3][0], testPoints[3][1] - minDiffWallMove) == Tile.wall) {
                     dir.y = -1;
                     dir.x = 0;
                 } else if (dir.y > 0) {
@@ -226,7 +228,7 @@ public class Entity {
                 }
             }
             if (testTile[4] == Tile.wall) { // right
-                if (base.getTile(testPoints[4][0] - 1, testPoints[4][1]) == Tile.wall) {
+                if (base.getTile(testPoints[4][0] - minDiffWallMove, testPoints[4][1]) == Tile.wall) {
                     dir.y = 0;
                     dir.x = -1;
                 } else if (dir.x > 0) {

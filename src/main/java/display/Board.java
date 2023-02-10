@@ -1,7 +1,7 @@
 package display;
 
 import background.Base;
-import background.RoomEnd;
+import background.RoomTick;
 import background.RoomFactory;
 import entities.Entity;
 import entities.EntityFactory;
@@ -32,7 +32,7 @@ public class Board extends JPanel implements ActionListener {
     private final Entity player;
     private double deltaTime;
 
-    private RoomEnd roomEnd;
+    private RoomTick roomTick;
 
 
     public Board() {
@@ -66,7 +66,7 @@ public class Board extends JPanel implements ActionListener {
 
         oldTime = System.nanoTime();
 
-        roomEnd = RoomFactory.createBasicRoom(baseLayer,player,entities,items);
+        roomTick = RoomFactory.createMazeRoom(baseLayer,player,entities,items);
 
     }
 
@@ -129,7 +129,7 @@ public class Board extends JPanel implements ActionListener {
             baseDeltaTime += deltaTime;
         }
 
-        roomEnd.runEndedIfEnded();
+        roomTick.runEndedIfEnded();
 
         if (player.getIsExit()) {
             while (entities.size() > 1) {
@@ -138,7 +138,7 @@ public class Board extends JPanel implements ActionListener {
             while (items.size() > 0) {
                 items.remove(items.size()-1);
             }
-            roomEnd = RoomFactory.createBasicRoom(baseLayer,player,entities,items);
+            roomTick = RoomFactory.createMazeRoom(baseLayer,player,entities,items);
         }
 
         repaint();

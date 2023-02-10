@@ -35,4 +35,12 @@ public class EntityFactory {
         return entity;
     }
 
+
+    static public Entity makeFire(Vector2d position, Entity player) {
+        ImageIcon icon = new ImageIcon("src/main/resources/Images/entitys/fire.png");
+        Tile[] weaknesses = {Tile.toxic};
+        Entity entity = new Entity(weaknesses,1,65,position, new ChaseAi(player,45,new WonderAi(400),8),new ConstantPlacer(Tile.fire),new SimpleDrawable(icon.getImage()));
+        entity.setNotAffectedByWall();
+        return entity;
+    }
 }
