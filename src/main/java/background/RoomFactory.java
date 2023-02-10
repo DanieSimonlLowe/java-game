@@ -19,12 +19,14 @@ public class RoomFactory {
     }
 
     static private void addItems(List<Item> items, Base base, int count) {
+        final int itemWidth = 20;
+        final int itemHeight = 30;
         for (int i = 0; i < count; i++) {
             int x, y;
             do {
                 x = borderSize + extraBorderSize + Base.random.nextInt(base.getWidth() - 2 * (borderSize + extraBorderSize));
                 y = borderSize + extraBorderSize + Base.random.nextInt(base.getHeight() - 2 * (borderSize + extraBorderSize));
-            } while (base.getTile(x,y) != Tile.none || base.getTile(x+extraBorderSize,x+extraBorderSize) != Tile.none);
+            } while (!base.isClear(x,y,itemWidth,itemHeight));
             int type = Base.random.nextInt(3);
             if (type == 0) {
                 double amount = Base.random.nextDouble()*10+5;
@@ -271,15 +273,20 @@ public class RoomFactory {
 
     static public RoomTick createRoom(Base base, Entity player, List<Entity> entities, List<Item> items, int difficulty) {
 
+
+        RoomTick rect;
+        int type = Base.random.nextInt(2);
+        if (type == 0) {
+            rect = createPillarRoom(base,player,entities,items,difficulty);
+        } else {
+            rect = createMazeRoom(base,player,entities,items,difficulty);
+        }
         items.clear();
         int count = (2 + Base.random.nextInt(3));
         addItems(items,base,count);
-        int type = Base.random.nextInt(2);
-        if (type == 0) {
-            return createPillarRoom(base,player,entities,items,difficulty);
-        } else {
-            return createMazeRoom(base,player,entities,items,difficulty);
-        }
+
+        return rect;
+
     }
 
 }

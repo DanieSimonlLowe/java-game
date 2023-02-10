@@ -224,4 +224,22 @@ public class Base extends Layer {
         Color color = getColor(x,y);
         return TileUtils.getTileFromColor(color);
     }
+
+    public boolean isClear(int x, int y, int width, int height) {
+        WritableRaster raster = image.getRaster();
+        for (int i = 0; i<width; i++) {
+            for (int j = 0; j<height; j++) {
+                int sx = i+x;
+                int sy = j+y;
+                int[] pixel = raster.getPixel(sx,sy,(int[])null);
+
+                if (pixel[3] != 0) {
+                    return false;
+                }
+
+            }
+        }
+        return true;
+    }
+
 }
