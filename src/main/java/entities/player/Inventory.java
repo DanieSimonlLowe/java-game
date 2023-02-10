@@ -164,18 +164,12 @@ public class Inventory {
         resetChanged();
     }
 
-    public void addItem(Item item) {
-        addTile(item.getTile(),item.getAmount());
-        item.destroy();
-    }
 
     public void collect(List<Item> items, Entity player) {
-        if (spaceUsed >= maxSpace) {
-            return;
-        }
         for (Item item: items) {
             if (item.shouldPickUp(player)) {
-                addItem(item);
+                item.addItem(player,this);
+
             }
         }
     }

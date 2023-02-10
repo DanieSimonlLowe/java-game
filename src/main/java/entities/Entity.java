@@ -28,6 +28,15 @@ public class Entity {
 
     private boolean affectedByWall;
 
+    private static final int maxHealth = 6;
+
+    public void addHealth(int amount) {
+        health += amount;
+        if (health > maxHealth) {
+            health = maxHealth;
+        }
+    }
+
     public void resetOnExit() {
         onEixt = false;
     }

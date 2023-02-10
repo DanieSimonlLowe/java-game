@@ -1,56 +1,36 @@
 package items;
 
-import background.Tile;
 import entities.Entity;
+import entities.player.Inventory;
 
-import javax.swing.*;
 import javax.vecmath.Vector2d;
 import java.awt.*;
 
-public class Item {
+public abstract class Item {
+
 
     private final Vector2d position;
-    private static final ImageIcon gooIcon = new ImageIcon("src/main/resources/Images/items/goo.png");
-    private static final ImageIcon iceIcon = new ImageIcon("src/main/resources/Images/items/ice.png");
-    private static final ImageIcon oilIcon = new ImageIcon("src/main/resources/Images/items/oil.png");
 
     private boolean shouldBeDestroyed;
 
-    private final Tile tile;
-    private final double amount;
 
     private final Image image;
 
-    public Item(double amount, Tile tile, Vector2d position) {
-        this.amount = amount;
-
-        this.tile = tile;
+    public Item( Image image, Vector2d position) {
         this.position = position;
         this.shouldBeDestroyed = false;
-        image = makeImage();
+        this.image = image;
     }
 
-    static private final double pickUpDistSquare = 2000;
+    static private final double pickUpDistSquare = 2500;
 
     public boolean shouldPickUp(Entity player) {
-        double distX = player.getCenterX() - position.getX() - image.getWidth(null)/2.0;
-        double distY = player.getCenterY() - position.getY() - image.getHeight(null)/2.0;
+        double distX = player.getCenterX() - (image.getWidth(null)/2.0 + position.getX());
+        double distY = player.getCenterY() - (image.getHeight(null)/2.0 + position.getY());
         double distSquare = distX*distX + distY*distY;
         return distSquare <= (pickUpDistSquare);
     }
 
-    private Image makeImage() {
-        switch (tile) {
-            case oil:
-                return oilIcon.getImage();
-            case goo:
-                return gooIcon.getImage();
-            case ice:
-                return iceIcon.getImage();
-            default:
-                throw new RuntimeException();
-        }
-    }
 
     public int getPosX() {
         return (int) position.getX();
@@ -64,14 +44,6 @@ public class Item {
         return image;
     }
 
-    public Tile getTile() {
-        return tile;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
     public void destroy() {
         shouldBeDestroyed = true;
     }
@@ -79,5 +51,7 @@ public class Item {
     public boolean shouldBeDestroyed() {
         return shouldBeDestroyed;
     }
+
+    public abstract void addItem(Entity player, Inventory inventory);
 
 }

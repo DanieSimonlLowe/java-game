@@ -2,7 +2,9 @@ package background;
 
 import entities.Entity;
 import entities.EntityFactory;
+import items.HealthItem;
 import items.Item;
+import items.TileItem;
 
 import javax.vecmath.Vector2d;
 import java.util.*;
@@ -27,16 +29,19 @@ public class RoomFactory {
                 x = borderSize + extraBorderSize + Base.random.nextInt(base.getWidth() - 2 * (borderSize + extraBorderSize));
                 y = borderSize + extraBorderSize + Base.random.nextInt(base.getHeight() - 2 * (borderSize + extraBorderSize));
             } while (!base.isClear(x,y,itemWidth,itemHeight));
-            int type = Base.random.nextInt(3);
+            int type = Base.random.nextInt(5);
             if (type == 0) {
                 double amount = Base.random.nextDouble()*10+5;
-                items.add(new Item(amount,Tile.oil,new Vector2d(x,y)));
+                items.add(new TileItem(amount,Tile.oil,new Vector2d(x,y)));
             } else if (type == 1) {
                 double amount = Base.random.nextDouble()*8+4;
-                items.add(new Item(amount,Tile.goo,new Vector2d(x,y)));
-            } else {
+                items.add(new TileItem(amount,Tile.goo,new Vector2d(x,y)));
+            } else if (type == 2) {
                 double amount = Base.random.nextDouble()*6+2;
-                items.add(new Item(amount,Tile.ice,new Vector2d(x,y)));
+                items.add(new TileItem(amount,Tile.ice,new Vector2d(x,y)));
+            } else {
+                int amount = Base.random.nextInt(5)+2;
+                items.add(new HealthItem(new Vector2d(x,y),amount));
             }
         }
     }
