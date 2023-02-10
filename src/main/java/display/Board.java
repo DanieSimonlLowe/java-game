@@ -33,6 +33,7 @@ public class Board extends JPanel implements ActionListener {
     private double deltaTime;
 
     private RoomTick roomTick;
+    private int difficulty;
 
 
     public Board() {
@@ -66,7 +67,8 @@ public class Board extends JPanel implements ActionListener {
 
         oldTime = System.nanoTime();
 
-        roomTick = RoomFactory.createMazeRoom(baseLayer,player,entities,items);
+        difficulty = 1;
+        roomTick = RoomFactory.createRoom(baseLayer,player,entities,items,difficulty);
 
     }
 
@@ -138,7 +140,8 @@ public class Board extends JPanel implements ActionListener {
             while (items.size() > 0) {
                 items.remove(items.size()-1);
             }
-            roomTick = RoomFactory.createMazeRoom(baseLayer,player,entities,items);
+            difficulty++;
+            roomTick = RoomFactory.createRoom(baseLayer,player,entities,items,difficulty);
         }
 
         repaint();

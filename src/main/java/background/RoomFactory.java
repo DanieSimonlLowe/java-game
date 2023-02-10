@@ -39,7 +39,7 @@ public class RoomFactory {
         }
     }
 
-    static public RoomTick createPillarRoom(Base base, Entity player, List<Entity> entities, List<Item> items) {
+    static private RoomTick createPillarRoom(Base base, Entity player, List<Entity> entities, List<Item> items, int difficulty) {
         player.resetOnExit();
         base.clear();
 
@@ -91,7 +91,7 @@ public class RoomFactory {
 
         final int spawnArea = 280;
         int side = Base.random.nextInt(3);
-        int count =  Base.random.nextInt(10) + 1;
+        int count =  Base.random.nextInt(difficulty) + 1;
         for (int i = 0; i < count; i++) {
             int x = base.getWidth() - borderSize -extraBorderSize - Base.random.nextInt(spawnArea);
             int y = Base.random.nextInt(spawnArea) + borderSize + extraBorderSize;
@@ -102,7 +102,7 @@ public class RoomFactory {
             }
 
         }
-        count =  Base.random.nextInt(10) + 1;
+        count =  Base.random.nextInt(difficulty) + 1;
         for (int i = 0; i < count; i++) {
             int x = Base.random.nextInt(spawnArea) + borderSize+ extraBorderSize;
             int y =  base.getHeight()-borderSize- extraBorderSize - Base.random.nextInt(spawnArea);
@@ -113,7 +113,7 @@ public class RoomFactory {
             }
         }
 
-        count =  Base.random.nextInt(10) + 1;
+        count =  Base.random.nextInt(difficulty) + 1;
         for (int i = 0; i < count; i++) {
             int x = base.getWidth()  - borderSize - extraBorderSize - Base.random.nextInt(spawnArea);
             int y =  base.getHeight()- borderSize - extraBorderSize - Base.random.nextInt(spawnArea);
@@ -125,8 +125,6 @@ public class RoomFactory {
         }
 
 
-        count = 2 + Base.random.nextInt(3);
-        addItems(items,base,count);
 
         return () -> {
             if (entities.size() <= 1) {
@@ -134,7 +132,6 @@ public class RoomFactory {
             }
         };
     }
-
 
     private static boolean mazeHasNabors(boolean[][] grid,int blockCountW, int blockCountH, int x, int y) {
         if (x > 1) {
@@ -153,14 +150,12 @@ public class RoomFactory {
             }
         }
         if (y+1 < blockCountH) {
-            if (!grid[x][y+1]) {
-                return true;
-            }
+            return !grid[x][y + 1];
         }
         return false;
     }
 
-    static public RoomTick createMazeRoom(Base base, Entity player, List<Entity> entities, List<Item> items) {
+    static private RoomTick createMazeRoom(Base base, Entity player, List<Entity> entities, List<Item> items, int difficulty) {
         player.resetOnExit();
 
         player.getPosition().set(borderSize+10,borderSize+10);
@@ -174,7 +169,7 @@ public class RoomFactory {
         final int blockCountH = (base.getHeight()-2*borderSize)/sumSize;
         final int blockCountW = (base.getWidth()-2*borderSize)/sumSize;
 
-        boolean grid[][] = new boolean[blockCountW][blockCountH];
+        boolean[][] grid = new boolean[blockCountW][blockCountH];
         for (int i = 0; i<blockCountW; i++) {
             for (int j = 0; j<blockCountH; j++) {
                 grid[i][j] = false;
@@ -240,7 +235,7 @@ public class RoomFactory {
                     break;
                 }
             }
-            if (noEmpty || num > 500) {
+            if (noEmpty || num > 1000) {
                 break;
             }
 
@@ -258,7 +253,7 @@ public class RoomFactory {
                 }
             }
         }
-        int count = Base.random.nextInt(2)+1;
+        int count = Base.random.nextInt(10-difficulty);
         for (int i = 0; i < count; i++) {
             x = Base.random.nextInt(blockCountW-1)+1;
             y = Base.random.nextInt(blockCountH-1)+1;
@@ -270,9 +265,21 @@ public class RoomFactory {
         entities.add(EntityFactory.makeFire(new Vector2d(borderSize,base.getHeight() - borderSize),player));
         entities.add(EntityFactory.makeFire(new Vector2d(base.getWidth() - borderSize, borderSize),player));
 
-        count = 2 + Base.random.nextInt(3);
-        addItems(items,base,count);
 
         return () -> {};
     }
+
+    static public RoomTick createRoom(Base base, Entity player, List<Entity> entities, List<Item> items, int difficulty) {
+
+        items.clear();
+        int count = (2 + Base.random.nextInt(3));
+        addItems(items,base,count);
+        int type = Base.random.nextInt(2);
+        if (type == 0) {
+            return createPillarRoom(base,player,entities,items,difficulty);
+        } else {
+            return createMazeRoom(base,player,entities,items,difficulty);
+        }
+    }
+
 }
