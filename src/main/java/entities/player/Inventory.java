@@ -4,8 +4,12 @@ import background.Tile;
 import background.TileUtils;
 import entities.Entity;
 import items.Item;
+import sound.SoundClip;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 import java.awt.image.BufferedImage;
 
@@ -164,12 +168,27 @@ public class Inventory {
         resetChanged();
     }
 
+    static final private SoundClip itemPickUpSound;
+
+    static {
+        try {
+            itemPickUpSound = new SoundClip("src/main/resources/Sounds/ItemPickUp.wav");
+        } catch (UnsupportedAudioFileException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void collect(List<Item> items, Entity player) {
         for (Item item: items) {
             if (item.shouldPickUp(player)) {
                 item.addItem(player,this);
+                try {
+                    itemPickUpSound.playClip();
+                } catch (IOException | LineUnavailableException | InterruptedException e) {
 
+                }
             }
         }
     }

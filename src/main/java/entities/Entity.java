@@ -2,12 +2,16 @@ package entities;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.vecmath.*;
 
 import background.Base;
 import background.Tile;
 import background.TileUtils;
 import display.Drawable;
+import sound.SoundClip;
 
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
@@ -161,11 +165,25 @@ public class Entity {
 
     private static final double damageBufferAmount = 1.5;
     private double damageBuffer;
+    private static final SoundClip healthLossSound;
+
+    static {
+        try {
+            healthLossSound = new SoundClip("src/main/resources/Sounds/HealthLoss.wav");
+        } catch (UnsupportedAudioFileException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void takeDamage(int amount) {
         if (damageBuffer <= 0) {
             damageBuffer = damageBufferAmount;
             health -= amount;
+            try {
+                healthLossSound.playClip();
+            } catch (IOException | LineUnavailableException | InterruptedException e) {
+
+            }
         }
     }
 
