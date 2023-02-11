@@ -3,9 +3,11 @@ package entities;
 import javax.swing.*;
 import javax.vecmath.Vector2d;
 
+import background.Base;
 import background.Tile;
 import entities.ai.ChaseAi;
 import entities.ai.ConstantPlacer;
+import entities.ai.RamAi;
 import entities.ai.WonderAi;
 import entities.player.Inventory;
 import entities.player.PlayerController;
@@ -42,5 +44,24 @@ public class EntityFactory {
         Entity entity = new Entity(weaknesses,1,65,position, new ChaseAi(player,45,new WonderAi(400),8),new ConstantPlacer(Tile.fire),new SimpleDrawable(icon.getImage()));
         entity.setNotAffectedByWall();
         return entity;
+    }
+
+
+    static public Entity makeRamer(Vector2d position, Entity player) {
+        ImageIcon icon = new ImageIcon("src/main/resources/Images/entitys/ramer.png");
+        Tile[] weaknesses = {Tile.toxic};
+        RamAi ramAi = new RamAi(1,1,0.15,player);
+        Entity entity = new Entity(weaknesses,1,300,position, ramAi,new ConstantPlacer(Tile.fire),new SimpleDrawable(icon.getImage()));
+        ramAi.addSelf(entity);
+        return entity;
+    }
+
+    static public Entity makeSimpleFire(Vector2d position, Entity player) {
+        int rand = Base.random.nextInt(2);
+        if (rand == 0) {
+            return makeRamer(position,player);
+        } else {
+            return makeChaser(position,player);
+        }
     }
 }

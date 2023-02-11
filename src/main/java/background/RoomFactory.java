@@ -105,7 +105,7 @@ public class RoomFactory {
             if (side == 0) {
                 entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
             } else {
-                entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
+                entities.add(EntityFactory.makeSimpleFire(new Vector2d(x,y),player));
             }
 
         }
@@ -116,7 +116,7 @@ public class RoomFactory {
             if (side == 1) {
                 entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
             } else {
-                entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
+                entities.add(EntityFactory.makeSimpleFire(new Vector2d(x,y),player));
             }
         }
 
@@ -127,7 +127,7 @@ public class RoomFactory {
             if (side == 2) {
                 entities.add(EntityFactory.makeGhost(new Vector2d(x,y),player));
             } else {
-                entities.add(EntityFactory.makeChaser(new Vector2d(x,y),player));
+                entities.add(EntityFactory.makeSimpleFire(new Vector2d(x,y),player));
             }
         }
 
@@ -272,7 +272,6 @@ public class RoomFactory {
         entities.add(EntityFactory.makeFire(new Vector2d(borderSize,base.getHeight() - borderSize),player));
         entities.add(EntityFactory.makeFire(new Vector2d(base.getWidth() - borderSize, borderSize),player));
 
-
         return () -> {};
     }
 
@@ -289,6 +288,7 @@ public class RoomFactory {
         items.clear();
         int count = (2 + Base.random.nextInt(3));
         addItems(items,base,count);
+
 
         return rect;
 

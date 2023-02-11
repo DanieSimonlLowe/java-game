@@ -189,6 +189,8 @@ public class Entity {
 
     private final static double iceChangeRate = 0.2;
 
+    public boolean touchingWall;
+
     private final int minDiffWallMove = 3;
 
     public void move(double deltaTime, Base base) {
@@ -196,6 +198,7 @@ public class Entity {
             return;
         }
         Tuple2d dir = controller.getDirection(position,deltaTime);
+        touchingWall = false;
 
         //center top left bottom right
         int[][] testPoints = getTestPoints();
@@ -237,6 +240,7 @@ public class Entity {
                 } else if (dir.y < 0) {
                     dir.y = 0;
                 }
+                touchingWall = true;
             }
             if (testTile[2] == Tile.wall) { // left
                 if (base.getTile(testPoints[2][0] + minDiffWallMove, testPoints[2][1]) == Tile.wall) {
@@ -245,6 +249,7 @@ public class Entity {
                 } else if (dir.x < 0) {
                     dir.x = 0;
                 }
+                touchingWall = true;
             }
             if (testTile[3] == Tile.wall) { // bottom
                 if (base.getTile(testPoints[3][0], testPoints[3][1] - minDiffWallMove) == Tile.wall) {
@@ -253,6 +258,7 @@ public class Entity {
                 } else if (dir.y > 0) {
                     dir.y = 0;
                 }
+                touchingWall = true;
             }
             if (testTile[4] == Tile.wall) { // right
                 if (base.getTile(testPoints[4][0] - minDiffWallMove, testPoints[4][1]) == Tile.wall) {
@@ -261,6 +267,7 @@ public class Entity {
                 } else if (dir.x > 0) {
                     dir.x = 0;
                 }
+                touchingWall = true;
             }
         }
 
