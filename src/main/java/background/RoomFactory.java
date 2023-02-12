@@ -52,46 +52,46 @@ public class RoomFactory {
 
         drawBorder(base);
 
-        final int pilerWidth = 200;
-        base.drawRect(Tile.wall,(base.getWidth()-pilerWidth)/2,(base.getHeight()-pilerWidth)/2,pilerWidth,pilerWidth);
+        final int pillarSize = 200;
+        base.drawRect(Tile.wall,(base.getWidth()- pillarSize)/2,(base.getHeight()- pillarSize)/2, pillarSize, pillarSize);
 
         player.getPosition().set(borderSize+10,borderSize+10);
 
-        final int wallWidth = 40;
+        final int wallSize = 40;
         final int holeWidthMin = 55;
         final int holeWidthVar = 60;
         int filledWall = Base.random.nextInt(5);
         if (Base.random.nextBoolean()) {
-            int holeWidth = holeWidthMin + Base.random.nextInt(holeWidthVar);
-            base.drawRect(Tile.wall,(base.getWidth())/2-wallWidth/2,(base.getHeight())/2,wallWidth,(base.getHeight())/2);
+            int holeSize = holeWidthMin + Base.random.nextInt(holeWidthVar);
+            base.drawRect(Tile.wall,(base.getWidth())/2-wallSize/2,(base.getHeight())/2,wallSize,(base.getHeight())/2);
             if (filledWall != 0) {
-                int pos = Base.random.nextInt(base.getHeight()/2-borderSize-holeWidth-pilerWidth) + pilerWidth + (base.getHeight()/2);
-                base.drawRect(Tile.none,(base.getWidth()-wallWidth)/2,pos,wallWidth,holeWidth);
+                int pos = Base.random.nextInt(base.getHeight()/2-borderSize-holeSize- pillarSize) + pillarSize + (base.getHeight()/2);
+                base.drawRect(Tile.none,(base.getWidth()-wallSize)/2,pos,wallSize,holeSize);
             }
 
         }
         if (Base.random.nextBoolean()) {
             int holeWidth = holeWidthMin + Base.random.nextInt(holeWidthVar);
-            base.drawRect(Tile.wall,(base.getWidth())/2-wallWidth/2,0,wallWidth,(base.getHeight())/2);
+            base.drawRect(Tile.wall,(base.getWidth())/2-wallSize/2,0,wallSize,(base.getHeight())/2);
             if (filledWall != 1) {
-                int pos = Base.random.nextInt(base.getHeight() / 2 - holeWidth - pilerWidth) + borderSize;
-                base.drawRect(Tile.none, (base.getWidth() - wallWidth) / 2, pos, wallWidth, holeWidth);
+                int pos = Base.random.nextInt(base.getHeight() / 2 - holeWidth - pillarSize) + borderSize;
+                base.drawRect(Tile.none, (base.getWidth() - wallSize) / 2, pos, wallSize, holeWidth);
             }
         }
         if (Base.random.nextBoolean()) {
             int holeWidth = holeWidthMin + Base.random.nextInt(holeWidthVar);
-            base.drawRect(Tile.wall,(base.getWidth())/2,(base.getHeight()-wallWidth)/2,(base.getWidth())/2,wallWidth);
+            base.drawRect(Tile.wall,(base.getWidth())/2,(base.getHeight()-wallSize)/2,(base.getWidth())/2,wallSize);
             if (filledWall != 2) {
-                int pos = Base.random.nextInt(base.getWidth() / 2 -borderSize-holeWidth-pilerWidth) + pilerWidth + (base.getWidth()/2);
-                base.drawRect(Tile.none, pos, (base.getHeight() - wallWidth) / 2, holeWidth, wallWidth);
+                int pos = Base.random.nextInt(base.getWidth() / 2 -borderSize-holeWidth- pillarSize) + pillarSize + (base.getWidth()/2);
+                base.drawRect(Tile.none, pos, (base.getHeight() - wallSize) / 2, holeWidth, wallSize);
             }
         }
         if (Base.random.nextBoolean()) {
             int holeWidth = 55 + Base.random.nextInt(holeWidthVar);
-            base.drawRect(Tile.wall,0,(base.getHeight()-wallWidth)/2,(base.getWidth())/2,wallWidth);
+            base.drawRect(Tile.wall,0,(base.getHeight()-wallSize)/2,(base.getWidth())/2,wallSize);
             if (filledWall != 3) {
-                int pos = Base.random.nextInt(base.getWidth() / 2 - pilerWidth - holeWidth) + borderSize;
-                base.drawRect(Tile.none, pos, (base.getHeight() - wallWidth) / 2, holeWidth, wallWidth);
+                int pos = Base.random.nextInt(base.getWidth() / 2 - pillarSize - holeWidth) + borderSize;
+                base.drawRect(Tile.none, pos, (base.getHeight() - wallSize) / 2, holeWidth, wallSize);
             }
         }
 
@@ -135,7 +135,7 @@ public class RoomFactory {
 
         return () -> {
             if (entities.size() <= 1) {
-                base.drawRect(Tile.exit,(base.getWidth()-pilerWidth)/2,(base.getHeight()-pilerWidth)/2,pilerWidth,pilerWidth);
+                base.drawRect(Tile.exit,(base.getWidth()- pillarSize)/2,(base.getHeight()- pillarSize)/2, pillarSize, pillarSize);
             }
         };
     }
@@ -269,8 +269,8 @@ public class RoomFactory {
 
         base.drawRect(Tile.exit, sumSize * (blockCountW-1) + borderSize, sumSize * (blockCountH-1) + borderSize , sumSize, sumSize);
 
-        entities.add(EntityFactory.makeFire(new Vector2d(borderSize,base.getHeight() - borderSize),player));
-        entities.add(EntityFactory.makeFire(new Vector2d(base.getWidth() - borderSize, borderSize),player));
+        entities.add(EntityFactory.makeSimpleFireThoughWall(new Vector2d(borderSize,base.getHeight() - borderSize),player));
+        entities.add(EntityFactory.makeSimpleFireThoughWall(new Vector2d(base.getWidth() - borderSize, borderSize),player));
 
         return () -> {};
     }

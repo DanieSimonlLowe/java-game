@@ -193,6 +193,10 @@ public class Entity {
 
     private final int minDiffWallMove = 3;
 
+    public Vector2d getLastDir() {
+        return (Vector2d) oldDir;
+    }
+
     public void move(double deltaTime, Base base) {
         if (controller == null) {
             return;
@@ -214,6 +218,8 @@ public class Entity {
                 onIce = true;
             } else if (testTile[i] == Tile.exit) {
                 onEixt = true;
+            } else if (testTile[i] == Tile.wall) {
+                touchingWall = true;
             }
         }
 
@@ -240,7 +246,6 @@ public class Entity {
                 } else if (dir.y < 0) {
                     dir.y = 0;
                 }
-                touchingWall = true;
             }
             if (testTile[2] == Tile.wall) { // left
                 if (base.getTile(testPoints[2][0] + minDiffWallMove, testPoints[2][1]) == Tile.wall) {
@@ -249,7 +254,6 @@ public class Entity {
                 } else if (dir.x < 0) {
                     dir.x = 0;
                 }
-                touchingWall = true;
             }
             if (testTile[3] == Tile.wall) { // bottom
                 if (base.getTile(testPoints[3][0], testPoints[3][1] - minDiffWallMove) == Tile.wall) {
@@ -258,7 +262,6 @@ public class Entity {
                 } else if (dir.y > 0) {
                     dir.y = 0;
                 }
-                touchingWall = true;
             }
             if (testTile[4] == Tile.wall) { // right
                 if (base.getTile(testPoints[4][0] - minDiffWallMove, testPoints[4][1]) == Tile.wall) {
@@ -267,7 +270,6 @@ public class Entity {
                 } else if (dir.x > 0) {
                     dir.x = 0;
                 }
-                touchingWall = true;
             }
         }
 

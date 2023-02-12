@@ -14,7 +14,7 @@ import java.util.List;
 import java.awt.image.BufferedImage;
 
 public class Inventory {
-    static final double maxSpace = 30;
+    static final double maxSpace = 100;
     static private final Tile[] tilePos = {Tile.ice,Tile.goo,Tile.oil};
     static private final double[] useMalt = {TileUtils.iceMalt*2, TileUtils.gooMalt,0.5};
     private int selected;
@@ -173,12 +173,11 @@ public class Inventory {
     static {
         try {
             itemPickUpSound = new SoundClip("src/main/resources/Sounds/ItemPickUp.wav");
-        } catch (UnsupportedAudioFileException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch  (IOException|UnsupportedAudioFileException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     public void collect(List<Item> items, Entity player) {
         for (Item item: items) {
@@ -187,7 +186,7 @@ public class Inventory {
                 try {
                     itemPickUpSound.playClip();
                 } catch (IOException | LineUnavailableException | InterruptedException e) {
-
+                    // do not fill
                 }
             }
         }
